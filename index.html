@@ -42,15 +42,21 @@
 <body class="min-h-screen font-sans">
 
 <header class="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 backdrop-blur">
-  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-    <button data-act="home" class="flex items-center gap-2 font-semibold">
+  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4">
+    <button data-act="home" class="flex shrink-0 items-center gap-2 font-semibold text-[#263A5C]">
       <img src="logo.svg" alt="" class="h-8 w-auto">
       dazgveva.ge
-      <span class="badge badge-limited ml-1 font-medium">დემო</span>
+      <span class="ml-1 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-700">დემო</span>
     </button>
+    <nav class="hidden items-center gap-6 whitespace-nowrap text-sm text-zinc-600 lg:flex">
+      <button data-act="anchor" data-id="how" class="hover:text-zinc-900">როგორ მუშაობს</button>
+      <button data-act="anchor" data-id="packages" class="hover:text-zinc-900">პაკეტები</button>
+      <button data-act="anchor" data-id="partners" class="hover:text-zinc-900">სადაზღვევოებისთვის</button>
+      <button data-act="anchor" data-id="faq" class="hover:text-zinc-900">კითხვები</button>
+    </nav>
     <div class="flex items-center gap-1">
-      <button data-act="nav-open" class="btn btn-outline btn-sm sm:hidden" aria-label="სცენარები"><i data-lucide="compass" class="h-4 w-4"></i><span class="hidden min-[400px]:inline">სცენარები</span></button>
-      <button data-act="staff" class="btn btn-ghost btn-sm text-zinc-600" aria-label="სტაფის შესვლა"><i data-lucide="log-in" class="h-4 w-4"></i><span class="hidden sm:inline">სტაფის შესვლა</span></button>
+      <button data-act="nav-open" class="inline-flex h-8 items-center gap-2 rounded-full border border-zinc-200 px-3 text-[13px] font-medium hover:bg-zinc-50 sm:hidden" aria-label="სცენარები"><i data-lucide="compass" class="h-4 w-4"></i><span class="hidden min-[400px]:inline">სცენარები</span></button>
+      <button data-act="staff" class="inline-flex h-8 items-center gap-2 whitespace-nowrap rounded-full px-3 text-[13px] font-medium text-zinc-600 hover:bg-zinc-100" aria-label="სტაფის შესვლა"><i data-lucide="log-in" class="h-4 w-4"></i><span class="hidden sm:inline">სტაფის შესვლა</span></button>
     </div>
   </div>
 </header>
