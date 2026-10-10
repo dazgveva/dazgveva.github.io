@@ -92,11 +92,11 @@
 <script>
 /* ============================== DATA ============================== */
 const INSURERS = {
-  kolkheti:  { name: 'კოლხეთი ჯგუფი',    color: '#047857' },
-  iberia:    { name: 'იბერია დაზღვევა',  color: '#1d4ed8' },
-  mtkvari:   { name: 'მტკვარი დაზღვევა', color: '#0e7490' },
-  kazbegi:   { name: 'ყაზბეგი დაზღვევა', color: '#b45309' },
-  argonauti: { name: 'არგონავტი',         color: '#7c3aed' },
+  kolkheti:  { name: 'კოლხეთი ჯგუფი',    color: '#047857', icon: 'sun' },           // Colchis, land of the Golden Fleece
+  iberia:    { name: 'იბერია დაზღვევა',  color: '#1d4ed8', icon: 'castle' },        // the ancient kingdom
+  mtkvari:   { name: 'მტკვარი დაზღვევა', color: '#0e7490', icon: 'waves' },         // the river
+  kazbegi:   { name: 'ყაზბეგი დაზღვევა', color: '#b45309', icon: 'mountain-snow' }, // the mountain
+  argonauti: { name: 'არგონავტი',         color: '#7c3aed', icon: 'sailboat' },      // the Argonauts' ship
 };
 const CATS = [
   { id: 'max',     label: 'მაქსიმალური დაფარვა', short: 'მაქს' },
@@ -436,7 +436,7 @@ function viewHome() {
     <h2 class="${h2}">პარტნიორი სადაზღვევოები</h2>
     <p class="mt-2 text-center text-sm text-zinc-500">ყოველ ძიებაზე ყველა მათგანის AI აგენტს ერთდროულად ვეკითხებით. ერთი დახურული რაუნდი — არავინ ხედავს კონკურენტის ფასს.</p>
     <div class="mt-8 grid gap-3 sm:grid-cols-2">${activeInsurers().map(id => `<div class="${row}">
-      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-bold text-white" style="background:${INSURERS[id].color}">${INSURERS[id].name[0]}</span>
+      ${insAvatar(id, 'h-12 w-12')}
       <div class="min-w-0 flex-1 truncate text-left font-semibold">${INSURERS[id].name}</div>
     </div>`).join('')}</div>
     <p class="mt-6 text-center text-sm text-zinc-500">ხართ სადაზღვევო კომპანია? დააკავშირეთ თქვენი AI აგენტი ჩვენს API-სთან — <button data-act="staff" class="font-medium text-[#263A5C] underline underline-offset-2">პარტნიორის პორტალი</button></p>
@@ -511,7 +511,7 @@ function viewAuction() {
     <div class="mt-6 h-2 overflow-hidden rounded-full bg-zinc-100"><div id="bar" class="h-full w-0 rounded-full bg-zinc-900"></div></div>
     <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
       ${ds.map(r => `<div id="chip-${r.id}" class="rounded-lg border border-zinc-200 px-3 py-2">
-        <div class="flex items-center gap-2 text-sm font-medium"><span class="h-2 w-2 rounded-full" style="background:${INSURERS[r.id].color}"></span><span class="truncate">${INSURERS[r.id].name}</span></div>
+        <div class="flex items-center gap-2 text-sm font-medium">${insAvatar(r.id, 'h-5 w-5')}<span class="truncate">${INSURERS[r.id].name}</span></div>
         <div class="st mt-1 flex items-center gap-1.5 text-xs text-zinc-500"><i data-lucide="loader-circle" class="h-3.5 w-3.5 animate-spin"></i><span>ველოდებით პასუხს…</span></div></div>`).join('')}
     </div>
     <div class="card mt-5">
@@ -531,7 +531,7 @@ function offerCard(cat) {
   const ins = INSURERS[w.insurer], on = S.selected.has(cat.id);
   return `<div data-act="select" data-cat="${cat.id}" class="card flex cursor-pointer flex-col p-5 transition ${on ? 'ring-2 ring-zinc-900' : 'hover:border-zinc-400'}">
     <div class="flex items-center justify-between">${badge}<span class="text-xs text-zinc-400">${w.count} შეთავაზებიდან</span></div>
-    <div class="mt-3 flex items-center gap-2"><span class="grid h-7 w-7 place-items-center rounded-md text-xs font-bold text-white" style="background:${ins.color}">${ins.name[0]}</span><span class="font-semibold">${ins.name}</span></div>
+    <div class="mt-3 flex items-center gap-2">${insAvatar(w.insurer)}<span class="font-semibold">${ins.name}</span></div>
     <div class="mt-4"><div class="text-3xl font-bold tracking-tight">${money(w.premium)}</div><div class="text-sm text-zinc-500">წლიური პრემია</div></div>
     <dl class="mt-4 grid grid-cols-2 gap-3 rounded-lg bg-zinc-50 p-3 text-sm">
       <div><dt class="text-xs text-zinc-500">სადაზღვევო თანხა</dt><dd class="font-medium">${money(w.sum)}</dd></div>
@@ -582,7 +582,7 @@ function viewDone() {
     <div class="mt-8 space-y-3">
       ${Object.entries(groups).map(([id, items]) => `<div class="card p-4">
         <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2"><span class="grid h-7 w-7 place-items-center rounded-md text-xs font-bold text-white" style="background:${INSURERS[id].color}">${INSURERS[id].name[0]}</span><span class="font-semibold">${INSURERS[id].name}</span></div>
+          <div class="flex items-center gap-2">${insAvatar(id)}<span class="font-semibold">${INSURERS[id].name}</span></div>
           <span class="text-xs text-zinc-500">1 მოთხოვნა · პაკეტი: ${items.length}</span>
         </div>
         <ul class="mt-3 space-y-2">${items.map(({ cat, w }) => `<li class="flex items-center justify-between text-sm"><span class="badge badge-${cat.id}">${cat.short}</span><span class="font-medium">${money(w.premium)} <span class="font-normal text-zinc-500">/ წელი</span></span></li>`).join('')}</ul>
@@ -663,7 +663,11 @@ const STATUS_DOT = { new: 'bg-sky-500', contact_requested: 'bg-emerald-500', exp
 const statusDot = s => `<span class="inline-flex items-center gap-1.5 text-[13px]"><span class="h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[s]}"></span>${STATUS[s][0]}</span>`;
 const statusBadge = s => `<span class="badge whitespace-nowrap font-medium ring-1 ring-inset ${STATUS[s][1]}">${STATUS[s][0]}</span>`;
 const chIcon = id => { const c = chById(id); return `<span title="${c.label}" class="grid h-7 w-7 shrink-0 place-items-center rounded-full" style="background:${c.color}14;color:${c.color}"><i data-lucide="${c.icon}" class="h-3.5 w-3.5"></i></span>`; };
-const insAvatar = (id, size = 'h-7 w-7') => `<span class="grid ${size} shrink-0 place-items-center rounded-md text-xs font-bold text-white" style="background:${INSURERS[id].color}">${INSURERS[id].name[0]}</span>`;
+const AVATAR_ICON = { 4: 'h-2.5 w-2.5', 5: 'h-3 w-3', 6: 'h-3.5 w-3.5', 7: 'h-4 w-4', 8: 'h-4 w-4', 10: 'h-5 w-5', 12: 'h-6 w-6' };
+const insAvatar = (id, size = 'h-7 w-7') => {
+  const ins = INSURERS[id], n = +(size.match(/h-(\d+)/) || [0, 7])[1];
+  return `<span class="grid ${size} shrink-0 place-items-center rounded-full text-white" style="background:${ins.color}" title="${ins.name}"><i data-lucide="${ins.icon || 'building-2'}" class="${AVATAR_ICON[n] || 'h-4 w-4'}"></i></span>`;
+};
 
 const CLIENT_VEHICLE = { make: 'Toyota', model: 'Camry', year: 2018, vin: '4T1B11HK5JU000000', plate: 'AA-123-BB', color: 'თეთრი', body: 'სედანი', engine: '2.5 ლ', fuel: 'ბენზინი', value: 52000 };
 const DEMO_CLIENT = { first: 'გიორგი', last: 'ბერიძე', pid: '01001012345', address: 'თბილისი, ნიმუშის ქ. 1' };
@@ -1105,7 +1109,7 @@ const timeOnly = t => fmtDate(t).split(', ')[1];
 const dateOnly = t => fmtDate(t).split(', ')[0];
 
 function initMeta() {
-  INSURERS.alazani = { name: 'ალაზანი დაზღვევა', color: '#be123c' };
+  INSURERS.alazani = { name: 'ალაზანი დაზღვევა', color: '#be123c', icon: 'grape' }; // the Alazani valley
   const desc = {
     kolkheti: 'დიდი პორტფელი, სწრაფი API. საკონტაქტო პირი: ციფრული გაყიდვების გუნდი.',
     iberia: 'ძლიერია იაფ სეგმენტში, „მაქს“ კატეგორიას არ სთავაზობს.',
@@ -1190,7 +1194,7 @@ function admLayout(content) {
 }
 
 const leadsOf = s => s.leadIds.map(leadById).filter(Boolean);
-const leadChip = l => `<span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-zinc-200 px-2 py-0.5 text-xs">${insAvatar(l.insurer, 'h-4 w-4 text-[9px]')}${INSURERS[l.insurer].name}<span class="h-1.5 w-1.5 rounded-full ${STATUS_DOT[l.status]}" title="${STATUS[l.status][0]}"></span></span>`;
+const leadChip = l => `<span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-zinc-200 px-2 py-0.5 text-xs">${insAvatar(l.insurer, 'h-4 w-4')}${INSURERS[l.insurer].name}<span class="h-1.5 w-1.5 rounded-full ${STATUS_DOT[l.status]}" title="${STATUS[l.status][0]}"></span></span>`;
 
 /* ---------- overview ---------- */
 function viewAdmOverview() {
@@ -1481,7 +1485,7 @@ function viewAdmUsers() {
       <tbody class="divide-y divide-zinc-100">${S.users.map(u => { const [st, cls] = userStatus(u); return `<tr>
         <td class="whitespace-nowrap px-4 py-3"><span class="font-mono text-[13px]">${u.username}</span>${u.demo ? ' <span class="badge badge-limited font-medium">სადემო</span>' : ''}</td>
         <td class="whitespace-nowrap px-4 py-3">${u.role === 'admin' ? 'ადმინისტრატორი' : 'სადაზღვევოს თანამშრომელი'}</td>
-        <td class="whitespace-nowrap px-4 py-3">${u.insurer ? `<span class="inline-flex items-center gap-2">${insAvatar(u.insurer, 'h-5 w-5 text-[10px]')}${INSURERS[u.insurer].name}</span>` : '<span class="text-zinc-400">dazgveva.ge</span>'}</td>
+        <td class="whitespace-nowrap px-4 py-3">${u.insurer ? `<span class="inline-flex items-center gap-2">${insAvatar(u.insurer, 'h-5 w-5')}${INSURERS[u.insurer].name}</span>` : '<span class="text-zinc-400">dazgveva.ge</span>'}</td>
         <td class="whitespace-nowrap px-4 py-3"><span class="badge font-medium ${cls}">${st}</span></td>
         <td class="whitespace-nowrap px-4 py-3 text-right">${u.username === 'admin' ? '' : `<button data-act="user-reset" data-u="${u.username}" class="btn btn-ghost btn-sm"><i data-lucide="key-round" class="h-3.5 w-3.5"></i>პაროლის აღდგენა</button><button data-act="user-toggle" data-u="${u.username}" class="btn btn-ghost btn-sm text-zinc-600">${u.active ? 'დეაქტივაცია' : 'აქტივაცია'}</button>`}</td></tr>`; }).join('')}</tbody>
     </table></div>`);
@@ -1507,7 +1511,7 @@ function viewLogin() {
     <aside class="card h-fit p-5">
       <h2 class="text-sm font-semibold">სადემო ანგარიშები</h2>
       <p class="mt-1 text-xs text-zinc-500">სადაზღვევოები · პაროლი: <span class="font-mono">${DEMO_PASSWORD}</span></p>
-      <ul class="mt-3 space-y-1.5">${demo.map(u => `<li><button data-act="login-fill" data-u="${u.username}" class="flex w-full items-center gap-2 rounded-md border border-zinc-200 px-2.5 py-2 text-left text-sm hover:border-zinc-900">${insAvatar(u.insurer, 'h-5 w-5 text-[10px]')}<span class="font-mono text-xs">${u.username}</span></button></li>`).join('')}</ul>
+      <ul class="mt-3 space-y-1.5">${demo.map(u => `<li><button data-act="login-fill" data-u="${u.username}" class="flex w-full items-center gap-2 rounded-md border border-zinc-200 px-2.5 py-2 text-left text-sm hover:border-zinc-900">${insAvatar(u.insurer, 'h-5 w-5')}<span class="font-mono text-xs">${u.username}</span></button></li>`).join('')}</ul>
     </aside>
   </section>`;
 }
@@ -1626,7 +1630,7 @@ const ADMIN_ACTIONS = {
       go('adm-insurers'); toast('ცვლილებები შენახულია.', 'save');
     } else {
       const nid = 'ins' + Date.now().toString(36);
-      INSURERS[nid] = { name: f.name.trim(), color: NEW_COLORS[Object.keys(S.meta).length % NEW_COLORS.length] };
+      INSURERS[nid] = { name: f.name.trim(), color: NEW_COLORS[Object.keys(S.meta).length % NEW_COLORS.length], icon: 'building-2' };
       S.meta[nid] = { status: 'active', ...data };
       const otp = makeOtp();
       S.users.push({ username: f.firstUser.trim(), role: 'partner', insurer: nid, password: otp, mustChange: true, active: true, demo: false });
@@ -1648,7 +1652,7 @@ const ADMIN_ACTIONS = {
     if ($('#del-confirm').value !== name) return;
     delete S.meta[id];
     S.users = S.users.filter(u => u.insurer !== id);
-    INSURERS[id] = { name: 'წაშლილი სადაზღვევო', color: '#a1a1aa', deleted: true };
+    INSURERS[id] = { name: 'წაშლილი სადაზღვევო', color: '#a1a1aa', icon: 'circle-off', deleted: true };
     S.modal = null; S.insTab = 'archived'; go('adm-insurers'); toast(`${name} სამუდამოდ წაიშალა.`, 'trash-2');
   },
   'user-add': el => { S.modal = { type: 'add-user', ins: el.dataset.ins }; renderModal(); },
