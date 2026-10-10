@@ -437,10 +437,7 @@ function viewHome() {
     <p class="mt-2 text-center text-sm text-zinc-500">ყოველ ძიებაზე ყველა მათგანის AI აგენტს ერთდროულად ვეკითხებით. ერთი დახურული რაუნდი — არავინ ხედავს კონკურენტის ფასს.</p>
     <div class="mt-8 grid gap-3 sm:grid-cols-2">${activeInsurers().map(id => `<div class="${row}">
       <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-bold text-white" style="background:${INSURERS[id].color}">${INSURERS[id].name[0]}</span>
-      <div class="min-w-0 flex-1 text-left">
-        <div class="truncate font-semibold">${INSURERS[id].name}</div>
-        <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1"><span class="${chip}"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>AI აგენტი ჩართულია</span><span class="${chip}"><i data-lucide="car" class="h-3.5 w-3.5"></i>კასკო</span></div>
-      </div>
+      <div class="min-w-0 flex-1 truncate text-left font-semibold">${INSURERS[id].name}</div>
     </div>`).join('')}</div>
     <p class="mt-6 text-center text-sm text-zinc-500">ხართ სადაზღვევო კომპანია? დააკავშირეთ თქვენი AI აგენტი ჩვენს API-სთან — <button data-act="staff" class="font-medium text-[#263A5C] underline underline-offset-2">პარტნიორის პორტალი</button></p>
   </section>
