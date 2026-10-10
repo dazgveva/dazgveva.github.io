@@ -33,7 +33,6 @@
   .badge-max { background:#18181b; color:#fafafa; }
   .badge-limited { background:#f4f4f5; color:#18181b; }
   .badge-cheap { border:1px solid #d4d4d8; color:#18181b; }
-  .dropzone.drag { border-color:#18181b; background:#f4f4f5; }
   .sheet-enter { animation: sheetIn .25s ease-out both; }
   @keyframes sheetIn { from { transform: translateX(100%); } to { transform: none; } }
   @media (max-width: 639px) { .sheet-enter { animation-name: sheetUp; } @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } } }
@@ -1667,9 +1666,9 @@ function render() {
 
 function bindDynamic() {
   document.querySelectorAll('[data-drop]').forEach(z => {
-    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag'); });
-    z.addEventListener('dragleave', () => z.classList.remove('drag'));
-    z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('drag'); acceptFiles(e.dataTransfer.files); });
+    z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('ring-2', 'ring-sky-300'); });
+    z.addEventListener('dragleave', () => z.classList.remove('ring-2', 'ring-sky-300'));
+    z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('ring-2', 'ring-sky-300'); acceptFiles(e.dataTransfer.files); });
   });
   const ph = $('#phone');
   if (ph) {
