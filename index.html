@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dazgveva.ge — V3 პროტოტიპი</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,7 +45,7 @@
 <header class="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 backdrop-blur">
   <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
     <button data-act="home" class="flex items-center gap-2 font-semibold">
-      <span class="grid h-8 w-8 place-items-center rounded-lg bg-zinc-900 text-white"><i data-lucide="shield-check" class="h-4 w-4"></i></span>
+      <img src="logo.svg" alt="" class="h-8 w-auto">
       dazgveva.ge
       <span class="badge badge-limited ml-1 font-medium">დემო</span>
     </button>
@@ -973,7 +974,7 @@ function viewModal() {
         <div class="flex items-center justify-between px-5 pb-1 pt-2 text-[11px] font-semibold" style="background:${app.head};color:${app.fg}"><span>${time}</span><span class="flex items-center gap-1"><i data-lucide="signal" class="h-3 w-3"></i><i data-lucide="wifi" class="h-3 w-3"></i><i data-lucide="battery-full" class="h-3.5 w-3.5"></i></span></div>
         <div class="flex items-center gap-2.5 px-3 py-2.5" style="background:${app.head};color:${app.fg}">
           <i data-lucide="chevron-left" class="h-5 w-5 opacity-80"></i>
-          <span class="grid h-8 w-8 place-items-center rounded-full bg-zinc-900 text-white"><i data-lucide="shield-check" class="h-4 w-4"></i></span>
+          <span class="grid h-8 w-8 place-items-center rounded-full bg-white"><img src="logo.svg" alt="" class="h-6 w-auto"></span>
           <div class="leading-tight"><div class="text-sm font-semibold">dazgveva.ge</div><div class="text-[11px] opacity-75">${app.name}</div></div>
         </div>
         <div class="flex-1 overflow-y-auto p-3" style="background:${app.bg}">
@@ -1112,7 +1113,7 @@ function admLayout(content) {
     <aside class="border-b border-zinc-200 bg-zinc-50/50 md:min-h-[calc(100vh-3.5rem)] md:w-64 md:shrink-0 md:border-b-0 md:border-r">
       <div class="p-4">
         <div class="text-[11px] font-medium uppercase tracking-wide text-zinc-400">ადმინისტრირება</div>
-        <div class="mt-2 flex items-center gap-2"><span class="grid h-8 w-8 place-items-center rounded-md bg-zinc-900 text-white"><i data-lucide="shield-check" class="h-4 w-4"></i></span><div><div class="text-sm font-semibold">dazgveva.ge</div><div class="text-xs text-zinc-500">admin</div></div></div>
+        <div class="mt-2 flex items-center gap-2"><img src="logo.svg" alt="" class="h-8 w-auto"><div><div class="text-sm font-semibold">dazgveva.ge</div><div class="text-xs text-zinc-500">admin</div></div></div>
       </div>
       <nav class="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col">
         ${items.map(([id, ic, label]) => `<button data-act="adm-nav" data-id="${id}" class="btn btn-sm shrink-0 justify-start md:w-full ${active === id ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'btn-ghost text-zinc-700'}"><i data-lucide="${ic}" class="h-4 w-4"></i>${label}</button>`).join('')}
