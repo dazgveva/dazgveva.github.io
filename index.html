@@ -310,83 +310,145 @@ function stepper(active) {
 
 const SIDE_NAME = { front: 'წინა მხარე', back: 'უკანა მხარე' };
 const nextSide = () => !S.front ? 'front' : !S.back ? 'back' : null;
+const HOME_BTN = 'inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition disabled:pointer-events-none disabled:opacity-50';
+const HOME_BTN_DARK = `${HOME_BTN} bg-[#263A5C] text-white hover:bg-[#1c2b45]`;
+const HOME_BTN_SOFT = `${HOME_BTN} bg-zinc-100 text-zinc-800 hover:bg-zinc-200`;
 
-function thumb(side) {
+function homeThumb(side) {
   const f = S[side], isNext = nextSide() === side;
-  if (!f) return `<div class="flex aspect-[1.586] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed ${isNext ? 'border-zinc-900 text-zinc-900' : 'border-zinc-200 text-zinc-400'} text-xs">
+  if (!f) return `<div class="flex aspect-[1.586] flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed ${isNext ? 'border-sky-300 bg-sky-50/50 text-sky-800' : 'border-zinc-200 text-zinc-400'} text-xs">
       <i data-lucide="${side === 'front' ? 'credit-card' : 'scan-line'}" class="h-5 w-5"></i><span class="font-medium">${SIDE_NAME[side]}</span>${isNext ? '<span class="text-zinc-500">ახლა ეს მხარე</span>' : ''}</div>`;
-  return `<div class="overflow-hidden rounded-lg border border-zinc-200">
-    <div class="relative aspect-[1.586] bg-zinc-100">
+  return `<div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+    <div class="relative aspect-[1.586] bg-zinc-50">
       <img src="${f.url}" alt="${SIDE_NAME[side]}" class="h-full w-full object-contain" onerror="this.style.display='none';this.nextElementSibling.classList.remove('hidden')">
       <div class="absolute inset-0 hidden flex-col items-center justify-center gap-1 p-2 text-center text-xs text-zinc-500"><i data-lucide="file-image" class="h-6 w-6"></i><span class="max-w-full truncate">${esc(f.name)}</span></div>
-      <span class="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium shadow-sm"><i data-lucide="circle-check" class="h-3 w-3 text-emerald-600"></i>${SIDE_NAME[side]}</span>
+      <span class="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium shadow-sm"><i data-lucide="circle-check" class="h-3 w-3 text-emerald-600"></i>${SIDE_NAME[side]}</span>
     </div>
-    <div class="flex border-t border-zinc-200">
-      <button data-act="pick" data-side="${side}" class="btn btn-ghost btn-sm flex-1 rounded-none" title="შეცვლა"><i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i><span class="hidden sm:inline">შეცვლა</span></button>
-      <button data-act="remove" data-side="${side}" class="btn btn-ghost btn-sm flex-1 rounded-none border-l border-zinc-200 text-rose-600" title="წაშლა"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i><span class="hidden sm:inline">წაშლა</span></button>
+    <div class="flex divide-x divide-zinc-200 border-t border-zinc-200 text-xs font-medium">
+      <button data-act="pick" data-side="${side}" class="flex flex-1 items-center justify-center gap-1.5 py-2 hover:bg-zinc-50"><i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>შეცვლა</button>
+      <button data-act="remove" data-side="${side}" class="flex flex-1 items-center justify-center gap-1.5 py-2 text-rose-600 hover:bg-rose-50"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>წაშლა</button>
     </div></div>`;
 }
 
-function uploadPanel() {
-  const target = nextSide(), any = S.front || S.back;
-  const zone = target ? `
-    <div data-drop class="dropzone flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed ${S.uploadError ? 'border-rose-300 bg-rose-50/50' : 'border-zinc-300'} px-4 py-7 text-center transition">
-      <span class="badge badge-limited">${target === 'front' ? 1 : 2} / 2</span>
-      <div class="grid h-14 w-20 place-items-center rounded-lg border-2 border-zinc-300 text-zinc-500"><i data-lucide="${target === 'front' ? 'credit-card' : 'scan-line'}" class="h-7 w-7"></i></div>
-      <p class="font-semibold">ატვირთე ტექპასპორტის ${SIDE_NAME[target]}</p>
-      <p class="hidden text-sm text-zinc-500 sm:block">ჩააგდე ფოტო აქ ან</p>
-      <div class="flex flex-wrap justify-center gap-2">
-        <button data-act="pick" data-src="cam" class="btn btn-primary btn-sm"><i data-lucide="camera" class="h-3.5 w-3.5"></i>ფოტოს გადაღება</button>
-        <button data-act="pick" data-src="multi" class="btn btn-outline btn-sm"><i data-lucide="upload" class="h-3.5 w-3.5"></i>ფაილის ატვირთვა</button>
+/* The rivo-style "search bar": one wide pill that asks for the next side of the tech passport */
+function uploadPill() {
+  const target = nextSide();
+  const shell = 'relative flex flex-col gap-2 rounded-3xl border bg-white p-2 shadow-sm transition sm:flex-row sm:items-center sm:rounded-full sm:pl-6';
+  if (!target) return `<div class="${shell} border-zinc-200">
+      <div class="flex flex-1 items-center gap-3 px-3 py-2 text-left sm:px-0"><i data-lucide="circle-check" class="h-5 w-5 shrink-0 text-emerald-600"></i><span class="text-sm font-medium sm:text-base">ორივე მხარე ატვირთულია</span></div>
+      <button data-act="scan" class="${HOME_BTN_DARK}" ${S.processing ? 'disabled' : ''}>${S.processing
+        ? '<i data-lucide="loader-circle" class="h-4 w-4 animate-spin"></i>ტექპასპორტი მუშავდება…'
+        : '<i data-lucide="sparkles" class="h-4 w-4"></i>AI ძიების დაწყება'}</button>
+    </div>`;
+  return `<div data-drop class="${shell} ${S.uploadError ? 'border-rose-300' : 'border-zinc-200'}">
+      <button data-act="pick" data-src="multi" class="flex flex-1 items-center gap-3 px-3 py-2 text-left sm:px-0">
+        <span class="shrink-0 rounded-full bg-sky-50 px-2 py-0.5 text-xs font-semibold text-sky-700">${target === 'front' ? 1 : 2} / 2</span>
+        <span class="text-sm text-zinc-500 sm:text-base">ატვირთე ტექპასპორტის ${SIDE_NAME[target]}</span>
+      </button>
+      <div class="flex items-center gap-2">
+        <span class="hidden text-sm text-zinc-400 sm:inline">ან</span>
+        <button data-act="pick" data-src="cam" class="${HOME_BTN_SOFT} flex-1 sm:flex-none"><i data-lucide="camera" class="h-4 w-4"></i>ფოტოს გადაღება</button>
+        <button data-act="pick" data-src="multi" class="${HOME_BTN_SOFT} flex-1 sm:hidden"><i data-lucide="upload" class="h-4 w-4"></i>ფაილი</button>
       </div>
-      <p class="text-xs text-zinc-400">JPG, PNG ან HEIC · მაქს. 10 მბ${target === 'front' && !any ? '<br>შეგიძლიათ ორივე ფოტო ერთად აირჩიოთ' : ''}</p>
-    </div>`
-    : `<div class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"><i data-lucide="circle-check" class="h-5 w-5 shrink-0"></i>ორივე მხარე ატვირთულია. დარწმუნდით, რომ ფოტოები მკაფიოა.</div>`;
-  return `${zone}
-    ${S.uploadError ? `<p class="mt-2 flex items-center gap-1.5 text-sm text-rose-600"><i data-lucide="circle-alert" class="h-4 w-4 shrink-0"></i>${S.uploadError}</p>` : ''}
-    ${any ? `<div class="mt-4 grid grid-cols-2 gap-3">${thumb('front')}${thumb('back')}</div>` : ''}
-    ${S.front && S.back ? `<div class="mt-2 text-right"><button data-act="swap" class="btn btn-ghost btn-sm text-zinc-600"><i data-lucide="arrow-left-right" class="h-3.5 w-3.5"></i>მხარეების გაცვლა</button></div>` : ''}`;
+    </div>`;
 }
 
 function viewHome() {
-  const ready = S.front && S.back;
+  const any = S.front || S.back;
+  const h2 = 'text-center text-xl font-bold uppercase tracking-wide text-[#263A5C] sm:text-2xl';
+  const row = 'flex items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 hover:shadow-sm';
+  const chip = 'inline-flex items-center gap-1 text-xs text-zinc-500';
+  const packages = [
+    ['max', 'shield-check', 'ავარია, ქურდობა, სტიქია, მინები და ევაკუატორი — დაბალი ფრანშიზით.', [['shield', 'სრული დაფარვა'], ['badge-percent', 'დაბალი ფრანშიზა']]],
+    ['limited', 'shield-half', 'ძირითადი რისკები ან დაფარვა ლიმიტებით — ბალანსი ფასსა და დაცვას შორის.', [['shield', 'ძირითადი რისკები'], ['scale', 'საშუალო ფრანშიზა']]],
+    ['cheap', 'piggy-bank', 'მინიმალური დაფარვა ყველაზე დაბალ ფასად.', [['car', 'ავარია + ქურდობა'], ['trending-down', 'ყველაზე დაბალი ფასი']]],
+  ];
+  const faq = [
+    ['ფასიანია თუ არა dazgveva.ge?', 'არა. ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას. პრემიას, რომელსაც ხედავთ, თავად სადაზღვევო კომპანია ადგენს.'],
+    ['რა ინფორმაციას იღებენ სადაზღვევოები?', 'აუქციონის დროს — მხოლოდ ავტომობილის მონაცემებს (მარკა, მოდელი, წელი, VIN). სახელს, პირად ნომერს და ტელეფონს იღებს მხოლოდ ის კომპანია, რომლის შეთავაზებასაც აირჩევთ, და ისიც თქვენი თანხმობით. მისამართი არავის გადაეცემა.'],
+    ['როგორ ირჩევს AI საუკეთესო შეთავაზებას?', 'შეთავაზებებს ერთი კატეგორიის შიგნით ადარებს: „იაფში“ — ყველაზე დაბალ წლიურ პრემიას, „მაქსსა“ და „ლიმიტირებულში“ — ფასის, ფრანშიზისა და დაფარვის საუკეთესო ბალანსს. თითოეულ არჩევანს მოკლე ახსნა ახლავს.'],
+    ['რა ხდება მოთხოვნის გაგზავნის შემდეგ?', 'არჩეულ კომპანიას ანონიმური მოთხოვნა მიუვა. როცა ის თქვენს კონტაქტს მოითხოვს, შეტყობინებას მიიღებთ თქვენთვის სასურველი საშუალებით. თუ 24 საათში არ მოითხოვს, ამასაც გაცნობებთ.'],
+    ['საჭიროა რეგისტრაცია?', 'არა. საკმარისია ტექპასპორტის ორივე მხარის ფოტო და ტელეფონის ნომერი.'],
+  ];
   return `
-  <section class="border-b border-zinc-100 bg-gradient-to-b from-zinc-50 to-white">
-    <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:py-14 md:grid-cols-[1fr_minmax(0,440px)] md:items-start md:gap-12">
-      <div class="fade-in md:pt-8">
-        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">იპოვე საუკეთესო კასკო — წუთებში</h1>
-        <p class="mt-4 text-base text-zinc-600 sm:text-lg">ატვირთე ტექპასპორტი და ჩვენი AI აგენტი სადაზღვევო კომპანიებისგან საუკეთესო შეთავაზებებს შეგიგროვებს.</p>
-        <div class="mt-6 flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
-          <i data-lucide="badge-check" class="mt-0.5 h-5 w-5 shrink-0"></i>
-          <p class="text-sm font-semibold sm:text-base">ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას.</p>
-        </div>
+  <section id="top" class="relative scroll-mt-24 overflow-hidden">
+    <div class="pointer-events-none absolute left-1/2 top-24 h-72 w-[42rem] max-w-[120%] -translate-x-1/2 rounded-full bg-gradient-to-b from-sky-100 to-transparent opacity-60 blur-3xl"></div>
+    <div class="relative mx-auto max-w-3xl px-4 pb-16 pt-14 text-center sm:pt-20">
+      <div class="flex items-center justify-center gap-3 sm:gap-5">
+        <img src="logo.svg" alt="" class="h-20 w-auto sm:h-28">
+        <span class="text-5xl font-bold tracking-tight text-[#263A5C] sm:text-7xl">dazgveva</span>
+      </div>
+      <h1 class="mx-auto mt-6 max-w-xl text-sm font-medium uppercase tracking-wider text-zinc-600 sm:text-base">აპოვნინე ხელოვნურ ინტელექტს შენთვის შესაფერისი სადაზღვევო პაკეტი</h1>
+
+      <div class="relative mt-8">
+        <div class="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-gradient-to-r from-sky-300 via-indigo-300 to-sky-300 opacity-50 blur-2xl"></div>
+        ${uploadPill()}
       </div>
 
-      <div class="card p-4 sm:p-5 fade-in">
-        <h2 class="text-lg font-semibold">ატვირთე ტექპასპორტი</h2>
-        <p class="mb-4 text-sm text-zinc-500">საჭიროა ორივე მხარის ფოტო.</p>
-        ${uploadPanel()}
-        ${S.scanError ? `<div class="mt-4 flex items-start gap-3 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800"><i data-lucide="triangle-alert" class="mt-0.5 h-4 w-4 shrink-0"></i>ტექპასპორტის წაკითხვა ვერ მოხერხდა. გთხოვთ, ატვირთოთ უფრო მკაფიო ფოტო.</div>` : ''}
-        <button data-act="scan" class="btn btn-primary btn-lg mt-4 w-full" ${ready && !S.processing ? '' : 'disabled'}>
-          ${S.processing ? '<i data-lucide="loader-circle" class="h-4 w-4 animate-spin"></i>ტექპასპორტი მუშავდება…' : 'გაგრძელება<i data-lucide="arrow-right" class="h-4 w-4"></i>'}
-        </button>
-        <p class="mt-3 text-center text-[11px] leading-relaxed text-zinc-400">ეს საიტი დაცულია reCAPTCHA-ით და მოქმედებს Google-ის <a href="#" class="underline">კონფიდენციალურობის პოლიტიკა</a> და <a href="#" class="underline">მომსახურების პირობები</a>.</p>
+      ${S.uploadError ? `<p class="mt-4 flex items-center justify-center gap-1.5 text-sm text-rose-600"><i data-lucide="circle-alert" class="h-4 w-4 shrink-0"></i>${S.uploadError}</p>` : ''}
+      ${S.scanError ? `<div class="mx-auto mt-4 flex max-w-xl items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-left text-sm text-rose-800"><i data-lucide="triangle-alert" class="mt-0.5 h-4 w-4 shrink-0"></i>ტექპასპორტის წაკითხვა ვერ მოხერხდა. გთხოვთ, ატვირთოთ უფრო მკაფიო ფოტო.</div>` : ''}
+
+      ${any ? `<div class="mx-auto mt-6 grid max-w-md grid-cols-2 gap-3">${homeThumb('front')}${homeThumb('back')}</div>
+        ${S.front && S.back ? '<button data-act="swap" class="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100"><i data-lucide="arrow-left-right" class="h-3.5 w-3.5"></i>მხარეების გაცვლა</button>' : ''}`
+      : '<p class="mt-5 text-xs text-zinc-400">JPG, PNG ან HEIC · მაქს. 10 მბ · შეგიძლიათ ორივე ფოტო ერთად აირჩიოთ</p>'}
+
+      <div class="mt-8 inline-flex items-start gap-2 rounded-2xl bg-emerald-50 px-4 py-2.5 text-left text-sm font-semibold text-emerald-800 ring-1 ring-inset ring-emerald-200 sm:items-center sm:rounded-full">
+        <i data-lucide="badge-check" class="h-5 w-5 shrink-0"></i>ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას.
       </div>
+      <p class="mt-4 text-[11px] text-zinc-400">ეს საიტი დაცულია reCAPTCHA-ით და მოქმედებს Google-ის <a href="#" class="underline">კონფიდენციალურობის პოლიტიკა</a> და <a href="#" class="underline">მომსახურების პირობები</a>.</p>
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-4 py-14">
-    <h2 class="text-xl font-semibold">როგორ მუშაობს</h2>
-    <div class="mt-6 grid gap-4 sm:grid-cols-3">
-      ${[['scan-line','ატვირთე ტექპასპორტი','ორივე მხარის ფოტო, ფაილით ან კამერით.'],
-         ['bot','ჩვენი AI აგენტი სადაზღვევოებს ეკითხება','მხოლოდ ავტომობილის მონაცემებით — პირადი ინფორმაციის გარეშე.'],
-         ['list-checks','აირჩიე საუკეთესო შეთავაზება','თითო კატეგორიაში საუკეთესო: მაქს, ლიმიტირებული, იაფი.']]
-        .map(([ic, t, d], i) => `<div class="card p-5"><div class="flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-zinc-100"><i data-lucide="${ic}" class="h-4 w-4"></i></span><span class="text-xs font-semibold text-zinc-400">${i + 1}</span></div><h3 class="mt-4 font-semibold">${t}</h3><p class="mt-1 text-sm text-zinc-500">${d}</p></div>`).join('')}
+  <section id="how" class="mx-auto max-w-5xl scroll-mt-24 px-4 py-14">
+    <h2 class="${h2}">როგორ მუშაობს</h2>
+    <div class="mt-8 grid gap-4 sm:grid-cols-3">
+      ${[['scan-line', 'ატვირთე ტექპასპორტი', 'ორივე მხარის ფოტო — ფაილით ან კამერით.'],
+         ['bot', 'AI სადაზღვევოებს ეკითხება', 'ჩვენი აგენტი ყველა პარტნიორის AI აგენტს ერთდროულად უგზავნის ავტომობილის მონაცემებს.'],
+         ['list-checks', 'აირჩიე საუკეთესო', 'თითო კატეგორიაში ერთ საუკეთესო შეთავაზებას ხედავ და ირჩევ, ვინ დაგიკავშირდეს.']]
+        .map(([ic, t, d], i) => `<div class="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
+          <div class="flex items-center justify-between"><span class="grid h-10 w-10 place-items-center rounded-full bg-sky-50 text-sky-700"><i data-lucide="${ic}" class="h-5 w-5"></i></span><span class="text-3xl font-bold text-zinc-100">${i + 1}</span></div>
+          <h3 class="mt-4 font-semibold">${t}</h3><p class="mt-1 text-sm text-zinc-500">${d}</p></div>`).join('')}
     </div>
-    <div class="mt-14 grid gap-6 md:grid-cols-[1fr_1.4fr]">
-      <h2 class="text-xl font-semibold">ვინ ვართ</h2>
-      <p class="text-zinc-600">dazgveva.ge არის დამოუკიდებელი შუამავალი მძღოლებსა და სადაზღვევო კომპანიებს შორის. ჩვენი მიზანია, მარტივად იპოვოთ თქვენთვის სასურველი პაკეტი და კომპანია.</p>
-    </div>
+  </section>
+
+  <section id="packages" class="mx-auto max-w-5xl scroll-mt-24 px-4 py-14">
+    <h2 class="${h2}">სამი პაკეტი</h2>
+    <p class="mt-2 text-center text-sm text-zinc-500">შეთავაზებებს მხოლოდ ერთი კატეგორიის შიგნით ვადარებთ — მსგავსს მსგავსთან.</p>
+    <div class="mt-8 space-y-3">${packages.map(([id, ic, d, chips]) => `<div class="${row}">
+      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full ${id === 'max' ? 'bg-zinc-900 text-white' : id === 'limited' ? 'bg-zinc-100 text-zinc-900' : 'border border-zinc-300 text-zinc-900'}"><i data-lucide="${ic}" class="h-5 w-5"></i></span>
+      <div class="min-w-0 flex-1 text-left">
+        <div class="font-semibold">${catById(id).label}</div>
+        <p class="mt-0.5 text-sm text-zinc-500">${d}</p>
+        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1">${chips.map(([ci, ct]) => `<span class="${chip}"><i data-lucide="${ci}" class="h-3.5 w-3.5"></i>${ct}</span>`).join('')}</div>
+      </div>
+      <button data-act="anchor" data-id="top" aria-label="ძიების დაწყება" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-zinc-100 text-zinc-700 transition hover:bg-zinc-200"><i data-lucide="arrow-up-right" class="h-4 w-4"></i></button>
+    </div>`).join('')}</div>
+  </section>
+
+  <section id="partners" class="mx-auto max-w-5xl scroll-mt-24 px-4 py-14">
+    <h2 class="${h2}">პარტნიორი სადაზღვევოები</h2>
+    <p class="mt-2 text-center text-sm text-zinc-500">ყოველ ძიებაზე ყველა მათგანის AI აგენტს ერთდროულად ვეკითხებით. ერთი დახურული რაუნდი — არავინ ხედავს კონკურენტის ფასს.</p>
+    <div class="mt-8 grid gap-3 sm:grid-cols-2">${activeInsurers().map(id => `<div class="${row}">
+      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-bold text-white" style="background:${INSURERS[id].color}">${INSURERS[id].name[0]}</span>
+      <div class="min-w-0 flex-1 text-left">
+        <div class="truncate font-semibold">${INSURERS[id].name}</div>
+        <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1"><span class="${chip}"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>AI აგენტი ჩართულია</span><span class="${chip}"><i data-lucide="car" class="h-3.5 w-3.5"></i>კასკო</span></div>
+      </div>
+    </div>`).join('')}</div>
+    <p class="mt-6 text-center text-sm text-zinc-500">ხართ სადაზღვევო კომპანია? დააკავშირეთ თქვენი AI აგენტი ჩვენს API-სთან — <button data-act="staff" class="font-medium text-[#263A5C] underline underline-offset-2">პარტნიორის პორტალი</button></p>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-14 text-center">
+    <h2 class="${h2}">ვინ ვართ</h2>
+    <p class="mt-4 text-zinc-600">dazgveva.ge არის დამოუკიდებელი შუამავალი მძღოლებსა და სადაზღვევო კომპანიებს შორის. ჩვენი მიზანია, მარტივად იპოვოთ თქვენთვის სასურველი პაკეტი და კომპანია.</p>
+  </section>
+
+  <section id="faq" class="mx-auto max-w-3xl scroll-mt-24 px-4 py-14">
+    <h2 class="${h2}">ხშირად დასმული კითხვები</h2>
+    <div class="mt-8 divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white">${faq.map(([q, a]) => `<details class="group px-5">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left font-medium [&::-webkit-details-marker]:hidden">${q}<i data-lucide="plus" class="h-4 w-4 shrink-0 text-zinc-400 transition group-open:rotate-45"></i></summary>
+      <p class="pb-4 text-left text-sm leading-relaxed text-zinc-600">${a}</p>
+    </details>`).join('')}</div>
   </section>`;
 }
 
@@ -1762,6 +1824,12 @@ document.addEventListener('click', e => {
   if (el.tagName === 'A') e.preventDefault();
   switch (act) {
     case 'home': go('home'); break;
+    case 'anchor': {
+      if (S.screen !== 'home') go('home');
+      const t = document.getElementById(el.dataset.id);
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    }
     case 'staff': { const u = S.session && userBy(S.session.username); if (u && !u.mustChange) enterPortal(u); else go('login'); break; }
     case 'privacy': toast('კონფიდენციალურობის პოლიტიკის გვერდი პროტოტიპში არ არის.'); break;
     case 'pick': $(el.dataset.side ? `#in-${el.dataset.side}` : `#in-${el.dataset.src}`).click(); break;
