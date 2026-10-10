@@ -99,8 +99,8 @@ const INSURERS = {
   argonauti: { name: 'არგონავტი',         color: '#7c3aed', icon: 'sailboat' },      // the Argonauts' ship
 };
 const CATS = [
-  { id: 'max',     label: 'მაქსიმალური დაფარვა', short: 'მაქს',          icon: 'umbrella' },   // protection from everything
-  { id: 'limited', label: 'ლიმიტირებული დაფარვა', short: 'ლიმიტირებული', icon: 'gauge' },      // covered up to a limit
+  { id: 'max',     label: 'მაქსიმალური დაფარვა', short: 'მაქს',          icon: 'infinity' },   // no limits: everything covered
+  { id: 'limited', label: 'ლიმიტირებული დაფარვა', short: 'ლიმიტირებული', icon: 'scale' },      // balance of price and protection
   { id: 'cheap',   label: 'იაფი შეთავაზება',      short: 'იაფი',          icon: 'piggy-bank' }, // lowest price
 ];
 const COVERAGE = [['collision','ავარია'],['theft','ქურდობა'],['nature','სტიქია'],['glass','მინები'],['towing','ევაკუატორი']];
@@ -369,7 +369,7 @@ function viewHome() {
   const chip = 'inline-flex items-center gap-1 text-xs text-zinc-500';
   const packages = [
     ['max', 'ავარია, ქურდობა, სტიქია, მინები და ევაკუატორი — დაბალი ფრანშიზით.', [['shield', 'სრული დაფარვა'], ['badge-percent', 'დაბალი ფრანშიზა']]],
-    ['limited', 'ძირითადი რისკები ან დაფარვა ლიმიტებით — ბალანსი ფასსა და დაცვას შორის.', [['shield', 'ძირითადი რისკები'], ['scale', 'საშუალო ფრანშიზა']]],
+    ['limited', 'ძირითადი რისკები ან დაფარვა ლიმიტებით — ბალანსი ფასსა და დაცვას შორის.', [['shield', 'ძირითადი რისკები'], ['badge-percent', 'საშუალო ფრანშიზა']]],
     ['cheap', 'მინიმალური დაფარვა ყველაზე დაბალ ფასად.', [['car', 'ავარია + ქურდობა'], ['trending-down', 'ყველაზე დაბალი ფასი']]],
   ];
   const faq = [
