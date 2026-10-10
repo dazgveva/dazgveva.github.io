@@ -338,25 +338,25 @@ function homeThumb(side) {
     </div></div>`;
 }
 
-/* The rivo-style "search bar": one wide pill that asks for the next side of the tech passport */
-function uploadPill() {
+/* Upload area: a drop zone that asks for the next side of the tech passport (Google-style wording:
+   "drop here" + "or choose a file"); once both sides are in, it turns into the start-search bar. */
+function uploadZone() {
   const target = nextSide();
-  const shell = 'relative flex flex-col gap-2 rounded-3xl border bg-white p-2 shadow-sm transition sm:flex-row sm:items-center sm:rounded-full sm:pl-6';
-  if (!target) return `<div class="${shell} border-zinc-200">
+  if (!target) return `<div class="relative flex flex-col gap-2 rounded-3xl border border-zinc-200 bg-white p-2 shadow-sm sm:flex-row sm:items-center sm:rounded-full sm:pl-6">
       <div class="flex flex-1 items-center gap-3 px-3 py-2 text-left sm:px-0"><i data-lucide="circle-check" class="h-5 w-5 shrink-0 text-emerald-600"></i><span class="text-sm font-medium sm:text-base">ორივე მხარე ატვირთულია</span></div>
       <button data-act="scan" class="${HOME_BTN_DARK}" ${S.processing ? 'disabled' : ''}>${S.processing
         ? '<i data-lucide="loader-circle" class="h-4 w-4 animate-spin"></i>ტექპასპორტი მუშავდება…'
         : '<i data-lucide="sparkles" class="h-4 w-4"></i>AI ძიების დაწყება'}</button>
     </div>`;
-  return `<div data-drop class="${shell} ${S.uploadError ? 'border-rose-300' : 'border-zinc-200'}">
-      <button data-act="pick" data-src="multi" class="flex flex-1 items-center gap-3 px-3 py-2 text-left sm:px-0">
-        <span class="shrink-0 rounded-full bg-sky-50 px-2 py-0.5 text-xs font-semibold text-sky-700">${target === 'front' ? 1 : 2} / 2</span>
-        <span class="text-sm text-zinc-500 sm:text-base">ატვირთე ტექპასპორტის ${SIDE_NAME[target]}</span>
-      </button>
-      <div class="flex items-center gap-2">
+  return `<div data-drop data-act="pick" data-src="multi" class="relative flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed ${S.uploadError ? 'border-rose-300 bg-rose-50/40' : 'border-zinc-300 bg-white/80 hover:border-sky-300 hover:bg-sky-50/40'} px-6 py-8 transition">
+      <span class="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-800">${target === 'front' ? 1 : 2} / 2 · ტექპასპორტის ${SIDE_NAME[target]}</span>
+      <span class="grid h-14 w-20 place-items-center rounded-xl border-2 border-zinc-300 text-zinc-400"><i data-lucide="${target === 'front' ? 'credit-card' : 'scan-line'}" class="h-7 w-7"></i></span>
+      <p class="hidden text-base font-medium text-zinc-800 sm:block">ჩააგდე ფოტო აქ</p>
+      <div class="flex items-center gap-3">
         <span class="hidden text-sm text-zinc-400 sm:inline">ან</span>
-        <button data-act="pick" data-src="multi" class="${HOME_BTN_SOFT} flex-1 sm:flex-none"><i data-lucide="upload" class="h-4 w-4"></i>ატვირთე ფოტო</button>
+        <button data-act="pick" data-src="multi" class="${HOME_BTN_SOFT}"><i data-lucide="image-up" class="h-4 w-4"></i><span class="sm:hidden">აირჩიე ფოტო</span><span class="hidden sm:inline">აირჩიე ფაილი</span></button>
       </div>
+      <p class="text-xs text-zinc-400">JPG, PNG ან HEIC · მაქს. 10 მბ${target === 'front' && !S.back ? ' · შეგიძლია ორივე ფოტო ერთად აირჩიო' : ''}</p>
     </div>`;
 }
 
@@ -389,7 +389,7 @@ function viewHome() {
 
       <div class="relative mt-8">
         <div class="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-gradient-to-r from-sky-300 via-indigo-300 to-sky-300 opacity-50 blur-2xl"></div>
-        ${uploadPill()}
+        ${uploadZone()}
       </div>
 
       ${S.uploadError ? `<p class="mt-4 flex items-center justify-center gap-1.5 text-sm text-rose-600"><i data-lucide="circle-alert" class="h-4 w-4 shrink-0"></i>${S.uploadError}</p>` : ''}
@@ -397,7 +397,7 @@ function viewHome() {
 
       ${any ? `<div class="mx-auto mt-6 grid max-w-md grid-cols-2 gap-3">${homeThumb('front')}${homeThumb('back')}</div>
         ${S.front && S.back ? '<button data-act="swap" class="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100"><i data-lucide="arrow-left-right" class="h-3.5 w-3.5"></i>მხარეების გაცვლა</button>' : ''}`
-      : '<p class="mt-5 text-xs text-zinc-400">JPG, PNG ან HEIC · მაქს. 10 მბ · შეგიძლიათ ორივე ფოტო ერთად აირჩიოთ</p>'}
+      : ''}
 
       <div class="mt-8 inline-flex items-start gap-2 rounded-2xl bg-emerald-50 px-4 py-2.5 text-left text-sm font-semibold text-emerald-800 ring-1 ring-inset ring-emerald-200 sm:items-center sm:rounded-full">
         <i data-lucide="badge-check" class="h-5 w-5 shrink-0"></i>ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას.
