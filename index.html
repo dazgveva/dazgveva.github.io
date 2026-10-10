@@ -64,11 +64,13 @@
 <main id="app" class="pb-24"></main>
 
 <footer class="border-t border-zinc-200">
-  <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-    <span>© 2026 dazgveva.ge</span>
-    <div class="flex flex-wrap gap-x-4 gap-y-1">
-      <a href="#" data-act="privacy" class="hover:text-zinc-900">კონფიდენციალურობის პოლიტიკა</a>
-      <a href="#" data-act="staff" class="hover:text-zinc-900">შესვლა</a>
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-8 text-sm text-zinc-500 sm:flex-row sm:justify-between">
+    <span class="flex items-center gap-2"><img src="logo.svg" alt="" class="h-6 w-auto">© 2026 dazgveva.ge</span>
+    <div class="flex items-center gap-2">
+      <a href="#" data-act="noop" aria-label="Facebook" title="Facebook" class="grid h-9 w-9 place-items-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-900"><i data-lucide="facebook" class="h-4 w-4"></i></a>
+      <a href="#" data-act="noop" aria-label="Instagram" title="Instagram" class="grid h-9 w-9 place-items-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-900"><i data-lucide="instagram" class="h-4 w-4"></i></a>
+      <a href="#" data-act="noop" aria-label="LinkedIn" title="LinkedIn" class="grid h-9 w-9 place-items-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-900"><i data-lucide="linkedin" class="h-4 w-4"></i></a>
+      <a href="#" data-act="noop" aria-label="YouTube" title="YouTube" class="grid h-9 w-9 place-items-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-900"><i data-lucide="youtube" class="h-4 w-4"></i></a>
     </div>
   </div>
   <p class="mx-auto max-w-6xl px-4 pb-6 text-xs text-zinc-400">დემო ვერსია: ყველა კომპანია, შეთავაზება და მონაცემი გამოგონილია.</p>
@@ -1836,7 +1838,6 @@ document.addEventListener('click', e => {
       break;
     }
     case 'staff': { const u = S.session && userBy(S.session.username); if (u && !u.mustChange) enterPortal(u); else go('login'); break; }
-    case 'privacy': toast('კონფიდენციალურობის პოლიტიკის გვერდი პროტოტიპში არ არის.'); break;
     case 'pick': $(el.dataset.side ? `#in-${el.dataset.side}` : `#in-${el.dataset.src}`).click(); break;
     case 'swap': [S.front, S.back] = [S.back, S.front]; render(); toast('მხარეები გაიცვალა.', 'arrow-left-right'); break;
     case 'remove': {
