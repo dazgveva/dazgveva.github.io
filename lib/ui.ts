@@ -7,7 +7,8 @@ export const cn = (...a: ClassValue[]) => twMerge(clsx(a));
 
 type BtnVariant = 'primary' | 'outline' | 'ghost' | 'danger';
 type BtnSize = 'sm' | 'md' | 'lg';
-const BTN_SIZE: Record<BtnSize, string> = { sm: 'h-8 px-3 text-[13px]', md: 'h-10 px-4 text-sm', lg: 'h-11 px-6 text-[15px]' };
+// Taller on phones so every button is a comfortable touch target (≥ 40–48px); desktop sizes from sm up.
+const BTN_SIZE: Record<BtnSize, string> = { sm: 'h-9 px-3 text-[13px] sm:h-8', md: 'h-11 px-4 text-sm sm:h-10', lg: 'h-12 px-6 text-[15px] sm:h-11' };
 const BTN_VARIANT: Record<BtnVariant, string> = {
   primary: 'bg-zinc-900 text-zinc-50 hover:bg-zinc-800',
   outline: 'border border-zinc-200 bg-white hover:bg-zinc-100',
@@ -39,6 +40,6 @@ export const STATUS: Record<LeadStatus, [string, string]> = {
 };
 export const STATUS_DOT: Record<LeadStatus, string> = { new: 'bg-sky-500', contact_requested: 'bg-emerald-500', expired: 'bg-zinc-400' };
 
-export const HOME_BTN = 'inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition disabled:pointer-events-none disabled:opacity-50';
+export const HOME_BTN = 'inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition sm:h-11 disabled:pointer-events-none disabled:opacity-50';
 export const HOME_BTN_DARK = `${HOME_BTN} bg-[#263A5C] text-white hover:bg-[#1c2b45]`;
 export const HOME_BTN_SOFT = `${HOME_BTN} bg-zinc-100 text-zinc-800 hover:bg-zinc-200`;
