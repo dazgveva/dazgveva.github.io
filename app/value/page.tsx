@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Icon } from '@/components/Icon';
-import { Stepper } from '@/components/Shells';
+import { StepActions, Stepper } from '@/components/Shells';
 import {
   CLIENT_VEHICLE, MARKET, MARKET_BINS, MARKET_STATS, S, VALUE_STEP, emit, go, money, num, valueMax, valueMin, valueOk,
 } from '@/lib/demo';
@@ -85,12 +85,11 @@ export default function ValuePage() {
         {option('own', 'მივუთითებ საკუთარ ღირებულებას', <Icon name="pencil" className="h-4 w-4 text-zinc-400" />)}
         {own && <OwnValue />}
       </div>
-      <div className="mt-6 flex items-center justify-between gap-3">
-        <button onClick={() => go('home')} className={btn('ghost')}><Icon name="arrow-left" className="h-4 w-4" />უკან</button>
+      <StepActions back={() => go('home')}>
         <button disabled={!ok} onClick={() => { if (S.valueMode === 'ai') S.value = S.aiValue; if (valueOk(S.value)) go('contact'); }} className={btn('primary', 'lg')}>
           გაგრძელება<Icon name="arrow-right" className="h-4 w-4" />
         </button>
-      </div>
+      </StepActions>
     </section>
   );
 }
@@ -115,7 +114,7 @@ function OwnValue() {
         <span className="text-sm text-zinc-500">{!ok ? '' : pct === 0 ? 'ემთხვევა AI-ის შეფასებას' : `სხვაობა AI-ის შეფასებასთან: ${pct > 0 ? '+' : ''}${pct}%`}</span>
       </div>
       <input type="range" min={valueMin()} max={valueMax()} step={VALUE_STEP} value={ok ? v! : S_.aiValue!} aria-label="ღირებულების შერჩევა"
-        onChange={e => { setRaw(e.target.value); set(+e.target.value); }} className="mt-4 w-full accent-[#263A5C]" />
+        onChange={e => { setRaw(e.target.value); set(+e.target.value); }} className="mt-4 h-8 w-full accent-[#263A5C] sm:h-auto" />
       <div className="flex justify-between text-[11px] text-zinc-400"><span>{money(valueMin())}</span><span>{money(valueMax())}</span></div>
       {!ok && <p className="mt-2 text-sm text-rose-600">ღირებულება უნდა იყოს {money(valueMin())} – {money(valueMax())} ფარგლებში.</p>}
       {ok && Math.abs(pct) > 15 && (

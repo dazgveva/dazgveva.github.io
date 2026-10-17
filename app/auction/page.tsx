@@ -56,11 +56,12 @@ export default function AuctionPage() {
       <div className="mt-6 h-2 overflow-hidden rounded-full bg-zinc-100">
         <div className="h-full rounded-full bg-zinc-900" style={{ width: started ? '100%' : '0%', transition: `width ${total}s linear` }} />
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+      {/* Phones: one compact row per insurer (full names, status on the right); tiles from sm up. */}
+      <div className="mt-5 divide-y divide-zinc-100 rounded-lg border border-zinc-200 sm:grid sm:grid-cols-3 sm:gap-2 sm:divide-y-0 sm:rounded-none sm:border-0">
         {search.ds.map(r => (
-          <div key={r.id} className="rounded-lg border border-zinc-200 px-3 py-2">
-            <div className="flex items-center gap-2 text-sm font-medium"><InsAvatar id={r.id} size="h-5 w-5" /><span className="truncate">{INSURERS[r.id].name}</span></div>
-            <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">{chip(r.id)}</div>
+          <div key={r.id} className="flex items-center justify-between gap-3 px-3 py-2.5 sm:block sm:rounded-lg sm:border sm:border-zinc-200 sm:py-2">
+            <div className="flex min-w-0 items-center gap-2 text-sm font-medium"><InsAvatar id={r.id} size="h-6 w-6 sm:h-5 sm:w-5" /><span className="truncate">{INSURERS[r.id].name}</span></div>
+            <div className="flex shrink-0 items-center gap-1.5 text-xs text-zinc-500 sm:mt-1">{chip(r.id)}</div>
           </div>
         ))}
       </div>

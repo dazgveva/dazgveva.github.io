@@ -79,7 +79,7 @@ export default function HomePage() {
               <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-3"><Thumb side="front" pick={pick} /><Thumb side="back" pick={pick} /></div>
               {S_.front && S_.back && (
                 <button onClick={() => { [S.front, S.back] = [S.back, S.front]; emit(); toast('მხარეები გაიცვალა.', 'arrow-left-right'); }}
-                  className="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100">
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-medium sm:px-3 sm:py-1.5 text-zinc-600 hover:bg-zinc-100">
                   <Icon name="arrow-left-right" className="h-3.5 w-3.5" />მხარეების გაცვლა
                 </button>
               )}
@@ -200,8 +200,8 @@ function Thumb({ side, pick }: { side: Side; pick: (side?: Side) => void }) {
         <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium shadow-xs"><Icon name="circle-check" className="h-3 w-3 text-emerald-600" />{SIDE_NAME[side]}</span>
       </div>
       <div className="flex divide-x divide-zinc-200 border-t border-zinc-200 text-xs font-medium">
-        <button onClick={() => pick(side)} className="flex flex-1 items-center justify-center gap-1.5 py-2 hover:bg-zinc-50"><Icon name="refresh-cw" className="h-3.5 w-3.5" />შეცვლა</button>
-        <button onClick={() => { setSide(side, null); S.scanError = false; emit(); }} className="flex flex-1 items-center justify-center gap-1.5 py-2 text-rose-600 hover:bg-rose-50"><Icon name="trash-2" className="h-3.5 w-3.5" />წაშლა</button>
+        <button onClick={() => pick(side)} className="flex flex-1 items-center justify-center gap-1.5 py-3 hover:bg-zinc-50 sm:py-2"><Icon name="refresh-cw" className="h-3.5 w-3.5" />შეცვლა</button>
+        <button onClick={() => { setSide(side, null); S.scanError = false; emit(); }} className="flex flex-1 items-center justify-center gap-1.5 py-3 text-rose-600 hover:bg-rose-50 sm:py-2"><Icon name="trash-2" className="h-3.5 w-3.5" />წაშლა</button>
       </div>
     </div>
   );

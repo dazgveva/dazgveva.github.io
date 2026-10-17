@@ -13,7 +13,7 @@ export function Footer() {
           {/* Placeholders: the social links don't go anywhere yet. */}
           {SOCIAL.map(([icon, label]) => (
             <a key={icon} href="#" onClick={e => e.preventDefault()} aria-label={label} title={label}
-              className="grid h-9 w-9 place-items-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-900">
+              className="grid h-10 w-10 place-items-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-300 hover:text-zinc-900">
               <Icon name={icon} className="h-4 w-4" />
             </a>
           ))}

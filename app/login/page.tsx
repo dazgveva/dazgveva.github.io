@@ -5,7 +5,7 @@ import { DEMO_PASSWORD, S, emit, isActive, submitLogin } from '@/lib/demo';
 import { useDemo } from '@/lib/useDemo';
 import { btn, card } from '@/lib/ui';
 
-const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10';
+const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10';
 
 /** Staff sign-in. Not linked from the public site: staff open /login directly. */
 export default function LoginPage() {
