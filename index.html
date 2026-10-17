@@ -99,9 +99,9 @@ const INSURERS = {
   argonauti: { name: 'არგონავტი',         color: '#7c3aed', icon: 'sailboat' },      // the Argonauts' ship
 };
 const CATS = [
-  { id: 'max',     label: 'მაქსიმალური დაფარვა', short: 'მაქს',          icon: 'infinity' },   // no limits: everything covered
-  { id: 'limited', label: 'ლიმიტირებული დაფარვა', short: 'ლიმიტირებული', icon: 'scale' },      // balance of price and protection
-  { id: 'cheap',   label: 'იაფი შეთავაზება',      short: 'იაფი',          icon: 'piggy-bank' }, // lowest price
+  { id: 'max',     label: 'მაქსიმალური დაფარვა', short: 'მაქს',          icon: 'infinity', hint: 'სრული დაფარვა · დაბალი ფრანშიზა' },   // no limits: everything covered
+  { id: 'limited', label: 'ლიმიტირებული დაფარვა', short: 'ლიმიტირებული', icon: 'scale', hint: 'ძირითადი რისკები · ბალანსი ფასსა და დაცვას შორის' },      // balance of price and protection
+  { id: 'cheap',   label: 'იაფი შეთავაზება',      short: 'იაფი',          icon: 'piggy-bank', hint: 'მინიმალური დაფარვა · ყველაზე დაბალი ფასი' }, // lowest price
 ];
 const COVERAGE = [['collision','ავარია'],['theft','ქურდობა'],['nature','სტიქია'],['glass','მინები'],['towing','ევაკუატორი']];
 const FULL = COVERAGE.map(c => c[0]);
@@ -113,7 +113,9 @@ const CHANNELS = [
   { id: 'telegram', label: 'Telegram',        icon: 'send',           color: '#0284c7' },
 ];
 const VEHICLE = { make: 'Toyota', model: 'Camry', year: 2018, value: 52000 };
-const TIMEOUT_AT = 6.5;
+const SENT_AT = 1.5;                                  // s: requests go out to the agents
+const AGENT_TIMEOUT_MS = 8000;                        // each agent has 8 s to answer
+const TIMEOUT_AT = SENT_AT + AGENT_TIMEOUT_MS / 1000; // 9.5 s
 const o = (premium, deductible, cov) => ({ premium, deductible, sum: VEHICLE.value, cov });
 const BASIC = ['collision','theft'];
 const CORE = ['collision','theft','nature'];
@@ -121,24 +123,24 @@ const CORE = ['collision','theft','nature'];
 /* Insurer agent responses per demo mode. t = seconds after the auction start. */
 const DATASETS = {
   normal: [
-    { id: 'kolkheti', t: 2.4, offers: { max: o(2640,300,FULL), limited: o(1890,500,[...CORE,'glass']), cheap: o(1240,1000,BASIC) } },
-    { id: 'iberia',   t: 3.1, offers: { limited: o(1980,500,CORE), cheap: o(980,1000,BASIC) }, declines: { max: 'not_offered' } },
-    { id: 'mtkvari',  t: 4.0, offers: { max: o(2790,300,FULL), limited: o(1720,500,CORE), cheap: o(1090,1200,BASIC) } },
-    { id: 'kazbegi',  t: 5.2, offers: { cheap: o(1060,800,BASIC) }, declines: { max: 'manual_underwriting', limited: 'not_offered' } },
+    { id: 'kolkheti', t: 3.6, offers: { max: o(2640,300,FULL), limited: o(1890,500,[...CORE,'glass']), cheap: o(1240,1000,BASIC) } },
+    { id: 'iberia',   t: 4.7, offers: { limited: o(1980,500,CORE), cheap: o(980,1000,BASIC) }, declines: { max: 'not_offered' } },
+    { id: 'mtkvari',  t: 6.0, offers: { max: o(2790,300,FULL), limited: o(1720,500,CORE), cheap: o(1090,1200,BASIC) } },
+    { id: 'kazbegi',  t: 7.8, offers: { cheap: o(1060,800,BASIC) }, declines: { max: 'manual_underwriting', limited: 'not_offered' } },
     { id: 'argonauti', timeout: true },
   ],
   surprises: [
-    { id: 'kolkheti', t: 2.2, offers: { max: o(2640,300,FULL), cheap: o(1240,1000,BASIC) }, declines: { limited: 'not_offered' } },
-    { id: 'iberia',   t: 3.4, offers: { cheap: o(980,1000,BASIC) }, declines: { max: 'not_offered', limited: 'not_offered' } },
-    { id: 'kazbegi',  t: 4.6, offers: { cheap: o(1060,800,BASIC) }, declines: { max: 'manual_underwriting', limited: 'not_offered' } },
+    { id: 'kolkheti', t: 3.3, offers: { max: o(2640,300,FULL), cheap: o(1240,1000,BASIC) }, declines: { limited: 'not_offered' } },
+    { id: 'iberia',   t: 5.1, offers: { cheap: o(980,1000,BASIC) }, declines: { max: 'not_offered', limited: 'not_offered' } },
+    { id: 'kazbegi',  t: 6.9, offers: { cheap: o(1060,800,BASIC) }, declines: { max: 'manual_underwriting', limited: 'not_offered' } },
     { id: 'mtkvari',  timeout: true },
     { id: 'argonauti', timeout: true },
   ],
   same: [
-    { id: 'kolkheti', t: 2.4, offers: { max: o(2640,300,FULL), limited: o(1650,500,CORE), cheap: o(1240,1000,BASIC) } },
-    { id: 'iberia',   t: 3.1, offers: { limited: o(1980,500,CORE), cheap: o(980,1000,BASIC) }, declines: { max: 'not_offered' } },
-    { id: 'mtkvari',  t: 4.0, offers: { max: o(2790,300,FULL), limited: o(1720,500,CORE), cheap: o(1090,1200,BASIC) } },
-    { id: 'kazbegi',  t: 5.2, offers: { cheap: o(1060,800,BASIC) }, declines: { max: 'manual_underwriting', limited: 'not_offered' } },
+    { id: 'kolkheti', t: 3.6, offers: { max: o(2640,300,FULL), limited: o(1650,500,CORE), cheap: o(1240,1000,BASIC) } },
+    { id: 'iberia',   t: 4.7, offers: { limited: o(1980,500,CORE), cheap: o(980,1000,BASIC) }, declines: { max: 'not_offered' } },
+    { id: 'mtkvari',  t: 6.0, offers: { max: o(2790,300,FULL), limited: o(1720,500,CORE), cheap: o(1090,1200,BASIC) } },
+    { id: 'kazbegi',  t: 7.8, offers: { cheap: o(1060,800,BASIC) }, declines: { max: 'manual_underwriting', limited: 'not_offered' } },
     { id: 'argonauti', timeout: true },
   ],
 };
@@ -153,7 +155,8 @@ const S = {
   screen: 'home', front: null, back: null, uploadError: null,
   processing: false, scanError: false, failScan: false,
   phone: '', phoneTouched: false, channels: [], preferred: null,
-  mode: 'normal', results: null, selected: new Set(), consent: false,
+  mode: 'normal', results: null, selected: new Set(),
+  aiValue: null, value: null, valueMode: 'ai', valuating: 0,
   navOpen: false,
   insurer: 'kolkheti', leadId: null, filter: 'all', modal: null, offset: 0, leads: [], calls: [], lastSent: [],
   meta: {}, users: [], searches: [], searchId: null, admFilter: 'all', admInsurer: 'all', insTab: 'active', editIns: null, form: null,
@@ -169,6 +172,8 @@ const icons = () => window.lucide && lucide.createIcons();
 const catById = id => CATS.find(c => c.id === id);
 const catBadge = (id, full = false, extra = '') => { const c = catById(id);
   return `<span class="badge badge-${id} ${extra}"><i data-lucide="${c.icon}" class="h-3 w-3"></i>${full ? c.label : c.short}</span>`; };
+const CAT_STYLE = { max: 'bg-zinc-900 text-white', limited: 'bg-zinc-100 text-zinc-900', cheap: 'border border-zinc-300 text-zinc-900' };
+const catIcon = (id, box = 'h-12 w-12', icon = 'h-5 w-5') => `<span class="grid ${box} shrink-0 place-items-center rounded-full ${CAT_STYLE[id]}"><i data-lucide="${catById(id).icon}" class="${icon}"></i></span>`;
 const chById = id => CHANNELS.find(c => c.id === id);
 const fmtPhone = d => [d.slice(0,3), d.slice(3,5), d.slice(5,7), d.slice(7,9)].filter(Boolean).join(' ');
 const phoneValid = () => /^5\d{8}$/.test(S.phone);
@@ -189,6 +194,7 @@ function go(screen) {
   render();
   window.scrollTo({ top: 0, behavior: 'instant' });
   if (screen === 'auction') startAuction();
+  if (screen === 'value' && !S.aiValue) startValuation();
 }
 
 /* Sample tech-passport images (SVG) so the demo works without real photos */
@@ -210,12 +216,13 @@ function prefill() {
   S.front = sampleCard('front'); S.back = sampleCard('back');
   S.uploadError = null;
   S.phone = '599123456'; S.channels = ['whatsapp', 'call']; S.preferred = 'whatsapp';
+  S.aiValue = S.value = VEHICLE.value; S.valueMode = 'ai';
 }
 
 function resetAll() {
   clearTimers();
   Object.assign(S, { front: null, back: null, uploadError: null, processing: false, scanError: false,
-    phone: '', phoneTouched: false, channels: [], preferred: null, results: null, selected: new Set(), consent: false });
+    phone: '', phoneTouched: false, channels: [], preferred: null, results: null, selected: new Set(), aiValue: null, value: null, valueMode: 'ai', valuating: 0 });
 }
 
 /* ============================== AUCTION LOGIC ============================== */
@@ -241,11 +248,11 @@ function pickBest(ds) {
   return res;
 }
 
-function buildLog(ds, results) {
+function buildLog(ds, results, value) {
   const L = [
     { t: 0.0, kind: 'ok', text: 'ავტომობილის მონაცემები ანონიმიზებულია — პირადი ინფორმაცია არ გადაეცემა' },
-    { t: 0.6, kind: 'ok', text: 'საბაზრო ღირებულება შეფასდა' },
-    { t: 1.0, kind: 'info', text: `მოთხოვნა გაეგზავნა ${ds.length} სადაზღვევო კომპანიას` },
+    { t: 0.8, kind: 'ok', text: `ავტომობილის ღირებულება: ${money(value)}` },
+    { t: SENT_AT, kind: 'info', text: `მოთხოვნა გაეგზავნა ${ds.length} სადაზღვევო კომპანიას · პასუხის ლოდინი ${AGENT_TIMEOUT_MS / 1000} წმ` },
   ];
   let total = 0;
   for (const r of ds) {
@@ -258,11 +265,16 @@ function buildLog(ds, results) {
   }
   L.sort((a, b) => a.t - b.t);
   const last = Math.max(...L.map(l => l.t));
-  L.push({ t: last + 0.3, kind: 'spin', id: 'compare', text: `AI აგენტი ადარებს ${total} შეთავაზებას…` });
-  let t = last + 0.9;
-  for (const c of CATS) if (!results[c.id]) { L.push({ t, kind: 'warn', text: `„${c.short}“: ამ კატეგორიაში შეთავაზება ვერ მოიძებნა` }); t += 0.2; }
-  L.push({ t: Math.max(t, last + 1.4), kind: 'done', text: 'შერჩეულია საუკეთესო შეთავაზებები' });
-  return L;
+  L.push({ t: last + 0.5, kind: 'spin', id: 'compare', text: `AI აგენტი ადარებს ${total} შეთავაზებას…` });
+  let t = last + 1.3;
+  for (const c of CATS) {
+    const w = results[c.id];
+    if (w) { const name = INSURERS[w.insurer].name; L.push({ t, kind: 'ok', who: w.insurer, name, text: `„${c.short}“: საუკეთესო — ${name} · ${money(w.premium)}` }); }
+    else L.push({ t, kind: 'warn', text: `„${c.short}“: ამ კატეგორიაში შეთავაზება ვერ მოიძებნა` });
+    t += 0.7;
+  }
+  L.push({ t: +(t - 0.3).toFixed(1), kind: 'done', text: 'შერჩეულია საუკეთესო შეთავაზებები' });
+  return L.map(l => ({ ...l, t: +l.t.toFixed(1) }));
 }
 
 const LOG_ICON = {
@@ -273,7 +285,7 @@ const LOG_ICON = {
 function startAuction() {
   const search = makeClientSearch(auctionDataset());
   S.results = search.results;
-  S.selected = new Set(); S.consent = false;
+  S.selected = new Set();
   const log = search.log;
   const total = log[log.length - 1].t;
   const list = $('#log'), bar = $('#bar');
@@ -309,12 +321,12 @@ function updateChip(id, kind, count) {
 
 /* ============================== VIEWS ============================== */
 function stepper(active) {
-  const steps = ['ტექპასპორტი', 'კონტაქტი', 'აუქციონი', 'შეთავაზებები'];
+  const steps = ['ტექპასპორტი', 'ღირებულება', 'კონტაქტი', 'აუქციონი', 'შეთავაზებები'];
   return `<ol class="flex items-center gap-1.5 text-xs sm:gap-2 sm:text-sm">${steps.map((s, i) => {
     const done = i < active, cur = i === active;
     const dot = done ? `<span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-zinc-900 text-white"><i data-lucide="check" class="h-3.5 w-3.5"></i></span>`
       : `<span class="grid h-6 w-6 shrink-0 place-items-center rounded-full ${cur ? 'bg-zinc-900 text-white' : 'border border-zinc-300 text-zinc-500'} text-xs font-semibold">${i + 1}</span>`;
-    return `<li class="flex items-center gap-1.5 ${cur ? 'font-semibold text-zinc-900' : 'text-zinc-500'}">${dot}<span class="${cur ? '' : 'hidden sm:inline'}">${s}</span></li>${i < 3 ? '<li class="h-px w-3 bg-zinc-300 sm:w-6"></li>' : ''}`;
+    return `<li class="flex items-center gap-1.5 ${cur ? 'font-semibold text-zinc-900' : 'text-zinc-500'}">${dot}<span class="${cur ? '' : 'hidden md:inline'}">${s}</span></li>${i < steps.length - 1 ? '<li class="h-px w-3 bg-zinc-300 sm:w-5"></li>' : ''}`;
   }).join('')}</ol>`;
 }
 
@@ -374,7 +386,7 @@ function viewHome() {
   ];
   const faq = [
     ['ფასიანია თუ არა dazgveva.ge?', 'არა. ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას. პრემიას, რომელსაც ხედავთ, თავად სადაზღვევო კომპანია ადგენს.'],
-    ['რა ინფორმაციას იღებენ სადაზღვევოები?', 'აუქციონის დროს — მხოლოდ ავტომობილის მონაცემებს (მარკა, მოდელი, წელი, VIN). სახელს, პირად ნომერს და ტელეფონს იღებს მხოლოდ ის კომპანია, რომლის შეთავაზებასაც აირჩევთ, და ისიც თქვენი თანხმობით. მისამართი არავის გადაეცემა.'],
+    ['რა ინფორმაციას იღებენ სადაზღვევოები?', 'აუქციონის დროს — მხოლოდ ავტომობილის მონაცემებს (მარკა, მოდელი, წელი, VIN, ღირებულება). სახელს, პირად ნომერს და ტელეფონს იღებს მხოლოდ ის კომპანია, რომლის შეთავაზებასაც აირჩევთ, და ისიც თქვენი თანხმობით. მისამართი არავის გადაეცემა.'],
     ['როგორ ირჩევს AI საუკეთესო შეთავაზებას?', 'შეთავაზებებს ერთი კატეგორიის შიგნით ადარებს: „იაფში“ — ყველაზე დაბალ წლიურ პრემიას, „მაქსსა“ და „ლიმიტირებულში“ — ფასის, ფრანშიზისა და დაფარვის საუკეთესო ბალანსს. თითოეულ არჩევანს მოკლე ახსნა ახლავს.'],
     ['რა ხდება მოთხოვნის გაგზავნის შემდეგ?', 'არჩეულ კომპანიას ანონიმური მოთხოვნა მიუვა. როცა ის თქვენს კონტაქტს მოითხოვს, შეტყობინებას მიიღებთ თქვენთვის სასურველი საშუალებით. თუ 24 საათში არ მოითხოვს, ამასაც გაცნობებთ.'],
     ['საჭიროა რეგისტრაცია?', 'არა. საკმარისია ტექპასპორტის ორივე მხარის ფოტო და ტელეფონის ნომერი.'],
@@ -412,7 +424,7 @@ function viewHome() {
     <h2 class="${h2}">როგორ მუშაობს</h2>
     <div class="mt-8 grid gap-4 sm:grid-cols-3">
       ${[['scan-line', 'ატვირთე ტექპასპორტი', 'ორივე მხარის ფოტო — ფაილით ან კამერით.'],
-         ['bot', 'AI სადაზღვევოებს ეკითხება', 'ჩვენი აგენტი ყველა პარტნიორის AI აგენტს ერთდროულად უგზავნის ავტომობილის მონაცემებს.'],
+         ['bot', 'AI აფასებს და ეკითხება', 'AI ბაზრის მიხედვით აფასებს ავტომობილს (შეგიძლია შეცვალო) და ყველა პარტნიორის AI აგენტს ერთდროულად ეკითხება.'],
          ['list-checks', 'აირჩიე საუკეთესო', 'თითო კატეგორიაში ერთ საუკეთესო შეთავაზებას ხედავ და ირჩევ, ვინ დაგიკავშირდეს.']]
         .map(([ic, t, d], i) => `<div class="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
           <div class="flex items-center justify-between"><span class="grid h-10 w-10 place-items-center rounded-full bg-sky-50 text-sky-700"><i data-lucide="${ic}" class="h-5 w-5"></i></span><span class="text-3xl font-bold text-zinc-100">${i + 1}</span></div>
@@ -424,7 +436,7 @@ function viewHome() {
     <h2 class="${h2}">სამი პაკეტი</h2>
     <p class="mt-2 text-center text-sm text-zinc-500">შეთავაზებებს მხოლოდ ერთი კატეგორიის შიგნით ვადარებთ — მსგავსს მსგავსთან.</p>
     <div class="mt-8 space-y-3">${packages.map(([id, d, chips]) => `<div class="${row}">
-      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full ${id === 'max' ? 'bg-zinc-900 text-white' : id === 'limited' ? 'bg-zinc-100 text-zinc-900' : 'border border-zinc-300 text-zinc-900'}"><i data-lucide="${catById(id).icon}" class="h-5 w-5"></i></span>
+      ${catIcon(id)}
       <div class="min-w-0 flex-1 text-left">
         <div class="font-semibold">${catById(id).label}</div>
         <p class="mt-0.5 text-sm text-zinc-500">${d}</p>
@@ -462,7 +474,7 @@ function viewContact() {
   const many = S.channels.length > 1;
   const showErr = S.phoneTouched && S.phone && !phoneValid();
   return `<section class="mx-auto max-w-xl px-4 py-8 fade-in">
-    <div class="mb-6">${stepper(1)}</div>
+    <div class="mb-6">${stepper(2)}</div>
     <h1 class="text-2xl font-bold tracking-tight">როგორ დაგიკავშირდეთ?</h1>
     <div class="card mt-6 space-y-6 p-5">
       <div>
@@ -498,7 +510,7 @@ function viewContact() {
       <p class="flex items-start gap-2 rounded-lg bg-zinc-50 p-3 text-sm text-zinc-600"><i data-lucide="lock" class="mt-0.5 h-4 w-4 shrink-0"></i>თქვენი პირადი მონაცემები სადაზღვევო კომპანიას მხოლოდ მაშინ გადაეცემა, როცა თქვენ მის შეთავაზებას აირჩევთ.</p>
     </div>
     <div class="mt-6 flex items-center justify-between gap-3">
-      <button data-act="home" class="btn btn-ghost"><i data-lucide="arrow-left" class="h-4 w-4"></i>უკან</button>
+      <button data-act="to-value" class="btn btn-ghost"><i data-lucide="arrow-left" class="h-4 w-4"></i>უკან</button>
       <button id="to-auction" data-act="start-auction" class="btn btn-primary btn-lg" ${phoneValid() && S.channels.length ? '' : 'disabled'}>შეთავაზებების მოძიება<i data-lucide="arrow-right" class="h-4 w-4"></i></button>
     </div>
   </section>`;
@@ -507,7 +519,7 @@ function viewContact() {
 function viewAuction() {
   const ds = auctionDataset();
   return `<section class="mx-auto max-w-2xl px-4 py-8 fade-in">
-    <div class="mb-6">${stepper(2)}</div>
+    <div class="mb-6">${stepper(3)}</div>
     <h1 id="auction-title" class="text-2xl font-bold tracking-tight">მიმდინარეობს აუქციონი</h1>
     <p class="mt-2 text-zinc-600">ჩვენი AI აგენტი სადაზღვევო კომპანიებს ეკითხება. ეს რამდენიმე წამს გაგრძელდება.</p>
     <div class="mt-6 h-2 overflow-hidden rounded-full bg-zinc-100"><div id="bar" class="h-full w-0 rounded-full bg-zinc-900"></div></div>
@@ -525,15 +537,13 @@ function viewAuction() {
 
 function offerCard(cat) {
   const w = S.results[cat.id];
-  const badge = catBadge(cat.id);
-  if (!w) return `<div class="card flex flex-col bg-zinc-50/60 p-5 opacity-70">
-      <div class="flex items-center justify-between">${badge}</div>
-      <h3 class="mt-3 text-sm font-medium text-zinc-500">${cat.label}</h3>
+  const head = `<div class="flex items-center gap-3 md:min-h-[5.5rem]">${catIcon(cat.id)}<div class="min-w-0"><h3 class="text-lg font-bold leading-tight">${cat.label}</h3><p class="mt-0.5 text-xs text-zinc-500">${cat.hint}</p></div></div>`;
+  if (!w) return `<div class="card flex flex-col bg-zinc-50/60 p-5">${head}
       <div class="flex flex-1 flex-col items-center justify-center gap-2 py-10 text-center text-sm text-zinc-500"><i data-lucide="search-x" class="h-6 w-6"></i>ამ კატეგორიაში შეთავაზება ვერ მოიძებნა</div></div>`;
   const ins = INSURERS[w.insurer], on = S.selected.has(cat.id);
   return `<div data-act="select" data-cat="${cat.id}" class="card flex cursor-pointer flex-col p-5 transition ${on ? 'ring-2 ring-zinc-900' : 'hover:border-zinc-400'}">
-    <div class="flex items-center justify-between">${badge}<span class="text-xs text-zinc-400">${w.count} შეთავაზებიდან</span></div>
-    <div class="mt-3 flex items-center gap-2">${insAvatar(w.insurer)}<span class="font-semibold">${ins.name}</span></div>
+    ${head}
+    <div class="mt-4 flex items-center gap-3 border-t border-zinc-100 pt-4">${insAvatar(w.insurer, 'h-10 w-10')}<div class="min-w-0"><div class="truncate font-semibold">${ins.name}</div><div class="text-xs text-zinc-500">საუკეთესო ${w.count} შეთავაზებიდან</div></div></div>
     <div class="mt-4"><div class="text-3xl font-bold tracking-tight">${money(w.premium)}</div><div class="text-sm text-zinc-500">წლიური პრემია</div></div>
     <dl class="mt-4 grid grid-cols-2 gap-3 rounded-lg bg-zinc-50 p-3 text-sm">
       <div><dt class="text-xs text-zinc-500">სადაზღვევო თანხა</dt><dd class="font-medium">${money(w.sum)}</dd></div>
@@ -548,24 +558,30 @@ function offerCard(cat) {
   </div>`;
 }
 
+/* Choosing and consenting are one action: the send button itself carries the consent, and the text
+   next to it names exactly which companies will receive the client's data. */
 function viewOffers() {
-  const can = S.selected.size > 0 && S.consent;
+  const n = S.selected.size;
+  const names = [...new Set(CATS.filter(c => S.selected.has(c.id)).map(c => INSURERS[S.results[c.id].insurer].name))];
   return `<section class="mx-auto max-w-6xl px-4 py-8 fade-in">
-    <div class="mb-6">${stepper(3)}</div>
+    <div class="mb-6">${stepper(4)}</div>
     <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
       <div><h1 class="text-2xl font-bold tracking-tight">საუკეთესო შეთავაზებები თქვენთვის</h1>
       <p class="mt-1 text-zinc-600">შეგიძლიათ აირჩიოთ ერთი, ორი ან სამივე შეთავაზება.</p></div>
-      <p class="flex items-center gap-1.5 text-sm text-zinc-500"><i data-lucide="car" class="h-4 w-4"></i>${VEHICLE.make} ${VEHICLE.model} · ${VEHICLE.year}</p>
+      <p class="flex items-center gap-1.5 text-sm text-zinc-500"><i data-lucide="car" class="h-4 w-4"></i>${VEHICLE.make} ${VEHICLE.model} · ${VEHICLE.year} · ${money(S.value || VEHICLE.value)}</p>
     </div>
     <div class="mt-6 grid gap-4 md:grid-cols-3">${CATS.map(offerCard).join('')}</div>
     <div class="sticky bottom-0 z-20 -mx-4 mt-6 border-t border-zinc-200 bg-white/95 px-4 py-4 backdrop-blur md:static md:mx-0 md:rounded-xl md:border md:p-5">
-      <label class="flex cursor-pointer items-start gap-3 text-xs sm:text-sm">
-        <input id="consent" type="checkbox" class="mt-0.5 h-4 w-4 accent-zinc-900" ${S.consent ? 'checked' : ''}>
-        <span>ვეთანხმები, რომ ჩემი სახელი, გვარი, პირადი ნომერი და საკონტაქტო ინფორმაცია გადაეცეს მხოლოდ ჩემ მიერ არჩეულ სადაზღვევო კომპანიას/კომპანიებს.</span>
-      </label>
-      <div class="mt-3 flex items-center justify-between gap-3">
-        <span class="whitespace-nowrap text-sm text-zinc-500">არჩეულია: <b class="text-zinc-900">${S.selected.size}</b> / 3</span>
-        <button id="send" data-act="send" class="btn btn-primary btn-lg" ${can ? '' : 'disabled'}><i data-lucide="send" class="h-4 w-4"></i>მოთხოვნის გაგზავნა</button>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="flex items-start gap-2 text-xs text-zinc-600 sm:max-w-xl sm:text-sm">
+          <i data-lucide="${n ? 'lock' : 'mouse-pointer-click'}" class="mt-0.5 h-4 w-4 shrink-0"></i>
+          <span>${n ? `შენი სახელი, გვარი, პირადი ნომერი და საკონტაქტო ინფორმაცია გადაეცემა მხოლოდ ${names.length > 1 ? 'არჩეულ კომპანიებს' : 'არჩეულ კომპანიას'}: <b class="text-zinc-900">${names.join(', ')}</b>.`
+                     : 'აირჩიე ერთი, ორი ან სამივე შეთავაზება — ბარათზე დაჭერით.'}</span>
+        </p>
+        <button id="send" data-act="send" class="inline-flex shrink-0 flex-col items-center justify-center rounded-xl bg-zinc-900 px-6 py-2.5 text-white transition hover:bg-zinc-800 disabled:pointer-events-none disabled:opacity-40" ${n ? '' : 'disabled'}>
+          <span class="flex items-center gap-2 text-[15px] font-semibold"><i data-lucide="send" class="h-4 w-4"></i>მოთხოვნის გაგზავნა${n ? ` (${n})` : ''}</span>
+          <span class="text-xs text-white/75">ვირჩევ და ვეთანხმები მონაცემების გაზიარებას</span>
+        </button>
       </div>
     </div>
   </section>`;
@@ -601,7 +617,7 @@ function viewDone() {
 
 function viewNav() {
   const sc = [
-    ['S1', 'კლიენტის ძირითადი გზა', 'ატვირთვა → კონტაქტი → აუქციონი → არჩევა → დადასტურება', 1],
+    ['S1', 'კლიენტის ძირითადი გზა', 'ატვირთვა → ღირებულება → კონტაქტი → აუქციონი → არჩევა → დადასტურება', 1],
     ['S2', 'ატვირთვის დეტალები', 'კამერა / ფაილი, პრევიუ, შეცვლა, წაშლა, შეცდომები', 1],
     ['S3', 'აუქციონი მოულოდნელობებით', 'უარები, დაგვიანებული პასუხები, კატეგორია შეთავაზების გარეშე', 1],
     ['S4', 'ერთი სადაზღვევო, ორი პაკეტი', 'მაქს + ლიმიტირებული ერთი კომპანიიდან → ერთი მოთხოვნა', 1],
@@ -698,11 +714,11 @@ let leadSeq = 1040, callSeq = 300;
 /* Demo history is generated as real searches (auction + offers + requests), so the
    admin view and every insurer dashboard show the same, consistent data. */
 const AGENT_PROFILE = {
-  kolkheti:  { t: 2.4, f: { max: 1.00, limited: 1.03, cheap: 1.10 }, ded: { max: 300, limited: 500, cheap: 1000 }, cov: { limited: [...CORE, 'glass'] } },
-  iberia:    { t: 3.1, f: { limited: 1.06, cheap: 1.00 }, ded: { limited: 500, cheap: 1000 }, dec: { max: 'not_offered' } },
-  mtkvari:   { t: 4.0, f: { max: 1.02, limited: 1.00, cheap: 1.05 }, ded: { max: 300, limited: 500, cheap: 1200 } },
-  kazbegi:   { t: 5.2, f: { cheap: 0.98 }, ded: { cheap: 800 }, dec: { max: 'manual_underwriting', limited: 'not_offered' } },
-  argonauti: { t: 3.6, f: { max: 0.99, limited: 1.00, cheap: 1.02 }, ded: { max: 250, limited: 500, cheap: 900 } },
+  kolkheti:  { t: 3.6, f: { max: 1.00, limited: 1.03, cheap: 1.10 }, ded: { max: 300, limited: 500, cheap: 1000 }, cov: { limited: [...CORE, 'glass'] } },
+  iberia:    { t: 4.7, f: { limited: 1.06, cheap: 1.00 }, ded: { limited: 500, cheap: 1000 }, dec: { max: 'not_offered' } },
+  mtkvari:   { t: 6.0, f: { max: 1.02, limited: 1.00, cheap: 1.05 }, ded: { max: 300, limited: 500, cheap: 1200 } },
+  kazbegi:   { t: 7.8, f: { cheap: 0.98 }, ded: { cheap: 800 }, dec: { max: 'manual_underwriting', limited: 'not_offered' } },
+  argonauti: { t: 5.4, f: { max: 0.99, limited: 1.00, cheap: 1.02 }, ded: { max: 250, limited: 500, cheap: 900 } },
 };
 const STD_COV = { max: FULL, limited: CORE, cheap: BASIC };
 /* [hours ago, chosen packages, request status (one per request or one for all), hours until contacts were requested] */
@@ -737,7 +753,7 @@ function seedDataset(i, value) {
 
 function recordCalls(s) {
   s.ds.forEach(r => S.calls.push({ insurer: r.id, req: s.id, at: s.at + (r.timeout ? TIMEOUT_AT : r.t) * 1000, timeout: !!r.timeout,
-    latency: r.timeout ? 5000 : Math.round((r.t - 1) * 1000), offers: r.timeout ? 0 : Object.keys(r.offers || {}).length, declines: Object.keys(r.declines || {}).length }));
+    latency: r.timeout ? AGENT_TIMEOUT_MS : Math.round((r.t - SENT_AT) * 1000), offers: r.timeout ? 0 : Object.keys(r.offers || {}).length, declines: Object.keys(r.declines || {}).length }));
 }
 
 function seedData() {
@@ -746,7 +762,7 @@ function seedData() {
     const car = SEED_CARS[(i * 3) % SEED_CARS.length], p = SEED_PEOPLE[i % SEED_PEOPLE.length];
     const ds = seedDataset(i, car.value), results = pickBest(ds);
     const s = { id: 'Q-' + (++callSeq), at: base - ago * HOUR, client: { ...p, channels: [...p.channels] }, vehicle: car, ds, results,
-      log: buildLog(ds, results), selected: chosen.filter(c => results[c]), leadIds: [] };
+      log: buildLog(ds, results, car.value), selected: chosen.filter(c => results[c]), leadIds: [] };
     const groups = {};
     s.selected.forEach(c => (groups[results[c].insurer] ||= []).push(c));
     Object.entries(groups).forEach(([ins, cats], j) => {
@@ -758,6 +774,7 @@ function seedData() {
       if (st === 'expired') { l.expiredAt = sentAt + DAY; l.messages.push({ type: 'expiry', at: l.expiredAt }); }
       leads.push(l); s.leadIds.push(l.id);
     });
+    if (s.leadIds.length) s.consentAt = s.at + 90e3;
     searches.push(s);
   });
   return { searches, leads };
@@ -778,12 +795,12 @@ function createClientLeads() {
   }
   const t = now(), srch = searchById(S.searchId);
   for (const [ins, packages] of Object.entries(groups)) {
-    const l = { id: 'R-' + (++leadSeq), searchId: srch && srch.id, insurer: ins, sentAt: t, fromClient: true, vehicle: CLIENT_VEHICLE, packages, status: 'new', messages: [],
+    const l = { id: 'R-' + (++leadSeq), searchId: srch && srch.id, insurer: ins, sentAt: t, fromClient: true, vehicle: srch ? srch.vehicle : CLIENT_VEHICLE, packages, status: 'new', messages: [],
       client: srch ? srch.client : { ...DEMO_CLIENT, phone: S.phone, channels: [...S.channels], preferred: S.preferred } };
     S.leads.unshift(l);
     if (srch) srch.leadIds.push(l.id);
   }
-  if (srch) srch.selected = CATS.map(c => c.id).filter(c => S.selected.has(c));
+  if (srch) { srch.selected = CATS.map(c => c.id).filter(c => S.selected.has(c)); srch.consentAt = t; }
   S.lastSent = Object.keys(groups);
 }
 
@@ -939,7 +956,8 @@ function viewInsDetail() {
             ${row('VIN', v.vin, true)}${row('სახელმწიფო ნომერი', v.plate, true)}${row('ძარა', v.body)}
             ${row('ძრავა', v.engine)}${row('საწვავი', v.fuel)}
           </dl>
-          <div class="mt-4 flex items-center justify-between rounded-lg bg-zinc-50 p-3 text-sm"><span class="flex items-center gap-1.5 text-zinc-600"><i data-lucide="sparkles" class="h-3.5 w-3.5"></i>საბაზრო ღირებულება (AI შეფასება)</span><b>≈ ${money(v.value)}</b></div>
+          <div class="mt-4 rounded-lg bg-zinc-50 p-3 text-sm"><div class="flex items-center justify-between"><span class="flex items-center gap-1.5 text-zinc-600"><i data-lucide="sparkles" class="h-3.5 w-3.5"></i>სადაზღვევო ღირებულება</span><b>${money(v.value)}</b></div>
+            <div class="mt-1 text-xs text-zinc-500">${v.aiValue && v.aiValue !== v.value ? `კლიენტმა მიუთითა · AI-ის საბაზრო შეფასება: ${money(v.aiValue)}` : 'AI-ის საბაზრო შეფასება, კლიენტმა დაადასტურა'}</div></div>
         </div>
         <div class="card p-5">
           <h2 class="flex items-center gap-2 font-semibold"><i data-lucide="package-check" class="h-4 w-4"></i>არჩეული პაკეტები</h2>
@@ -971,7 +989,7 @@ function viewInsApi() {
   const { plate, value, ...veh } = CLIENT_VEHICLE;
   const reqJson = { request_id: 'a3f1…', product: 'casco', categories: ['max', 'limited', 'cheap'],
     vehicle: { vin: veh.vin, make: veh.make, model: veh.model, year: veh.year, body: 'sedan', engine_cc: 2500, fuel: 'petrol', color: 'white' },
-    estimated_value_gel: value, respond_within_ms: 5000 };
+    market_value_gel: value, insured_value_gel: value, respond_within_ms: AGENT_TIMEOUT_MS };
   const resJson = { offers: [{ category: 'max', annual_premium_gel: 2640, sum_insured_gel: 52000, deductible_gel: 300, coverage: ['collision', 'theft', 'natural_disaster', 'glass', 'towing'] }],
     declines: [{ category: 'cheap', reason: 'not_offered' }] };
   const pre = o => `<pre class="mt-3 overflow-x-auto rounded-lg bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-100">${esc(JSON.stringify(o, null, 2))}</pre>`;
@@ -984,7 +1002,7 @@ function viewInsApi() {
         <div><dt class="text-xs text-zinc-500">AI აგენტის API მისამართი</dt><dd class="mt-0.5 break-all font-mono text-[13px]">https://agent.${S.insurer}.example/dazgveva/v1/quote</dd></div>
         <div><dt class="text-xs text-zinc-500">ავთენტიფიკაციის მეთოდი</dt><dd class="mt-0.5 font-medium">API გასაღები (Bearer) · HTTPS</dd></div>
         <div><dt class="text-xs text-zinc-500">გასაღები</dt><dd class="mt-0.5 font-mono text-[13px]">dzg_demo_••••••••${S.insurer.slice(0, 4)}</dd></div>
-        <div><dt class="text-xs text-zinc-500">პასუხის ლოდინის დრო</dt><dd class="mt-0.5 font-medium">5 წამი</dd></div>
+        <div><dt class="text-xs text-zinc-500">პასუხის ლოდინის დრო</dt><dd class="mt-0.5 font-medium">8 წამი</dd></div>
       </dl>
       <p class="mt-4 text-xs text-zinc-500">პარამეტრებს ცვლის dazgveva.ge-ს ადმინისტრატორი. ჩვენ არასოდეს ვაგზავნით კლიენტის სახელს, პირად ნომერს, ტელეფონს ან სახელმწიფო ნომერს.</p>
     </div>
@@ -999,7 +1017,7 @@ function viewInsApi() {
         <tbody class="divide-y divide-zinc-100">${calls.map(c => `<tr>
           <td class="whitespace-nowrap px-5 py-2.5 text-zinc-600">${fmtDate(c.at)}</td><td class="px-5 py-2.5 font-mono text-xs">${c.req}</td>
           <td class="px-5 py-2.5">${c.timeout ? '<span class="font-medium text-amber-600">—</span>' : '<span class="font-medium text-emerald-700">200</span>'}</td>
-          <td class="whitespace-nowrap px-5 py-2.5">${c.timeout ? '> 5 000 მწმ' : `${String(c.latency).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} მწმ`}</td>
+          <td class="whitespace-nowrap px-5 py-2.5">${c.timeout ? '> 8 000 მწმ' : `${String(c.latency).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} მწმ`}</td>
           <td class="whitespace-nowrap px-5 py-2.5">${c.timeout ? '<span class="text-amber-700">დრო ამოიწურა</span>' : `${c.offers} შეთავაზება${c.declines ? ` · ${c.declines} უარი` : ''}`}</td></tr>`).join('')}</tbody>
       </table>
     </div>`);
@@ -1124,7 +1142,7 @@ function initMeta() {
   S.meta = {};
   Object.keys(INSURERS).forEach(id => {
     S.meta[id] = { status: id === 'alazani' ? 'archived' : 'active', desc: desc[id], endpoint: `https://agent.${id}.example/dazgveva/v1/quote`,
-      auth: auth[id], timeout: 5, creds: auth[id] === 'oauth' ? { tokenUrl: `https://auth.${id}.example/oauth/token`, clientId: 'dazgveva-platform', clientSecret: '••••••••', scope: 'quotes' }
+      auth: auth[id], timeout: 8, creds: auth[id] === 'oauth' ? { tokenUrl: `https://auth.${id}.example/oauth/token`, clientId: 'dazgveva-platform', clientSecret: '••••••••', scope: 'quotes' }
         : auth[id] === 'hmac' ? { secret: 'dzg_' + rnd(24, '0123456789abcdef'), header: 'X-Dazgveva-Signature' }
         : auth[id] === 'mtls' ? { caName: `${id}-ca.pem` } : { key: 'dzg_' + rnd(24, '0123456789abcdef') } };
   });
@@ -1134,12 +1152,15 @@ function initMeta() {
 
 /* Auction participants: every active built-in agent + any agent the admin added */
 function auctionDataset(mode = S.mode) {
-  const ds = DATASETS[mode].filter(r => isActive(r.id));
+  const v = S.value || VEHICLE.value, f = v / VEHICLE.value;   // premiums follow the value the client confirmed
+  const scale = o => ({ ...o, premium: Math.round(o.premium * f / 10) * 10, sum: v });
+  const ds = DATASETS[mode].filter(r => isActive(r.id))
+    .map(r => r.timeout ? r : { ...r, offers: Object.fromEntries(Object.entries(r.offers).map(([c, o]) => [c, scale(o)])) });
   Object.keys(S.meta).filter(id => isActive(id) && !AGENT_PROFILE[id]).forEach((id, k) => {
     const offers = {};
-    CATS.forEach(c => offers[c.id] = { premium: Math.round(VEHICLE.value * PKG_RULES[c.id][0] * (1.06 + k * 0.02) / 10) * 10,
-      deductible: PKG_RULES[c.id][1], sum: VEHICLE.value, cov: STD_COV[c.id] });
-    ds.push({ id, t: 3.6 + k * 0.4, offers });
+    CATS.forEach(c => offers[c.id] = { premium: Math.round(v * PKG_RULES[c.id][0] * (1.06 + k * 0.02) / 10) * 10,
+      deductible: PKG_RULES[c.id][1], sum: v, cov: STD_COV[c.id] });
+    ds.push({ id, t: 5.0 + k * 0.5, offers });
   });
   return ds;
 }
@@ -1147,7 +1168,9 @@ function auctionDataset(mode = S.mode) {
 function makeClientSearch(ds) {
   const results = pickBest(ds);
   const s = { id: 'Q-' + (++callSeq), at: now(), fromClient: true, client: { ...DEMO_CLIENT, phone: S.phone, channels: [...S.channels], preferred: S.preferred },
-    vehicle: CLIENT_VEHICLE, ds, results, log: buildLog(ds, results), selected: [], leadIds: [] };
+    vehicle: { ...CLIENT_VEHICLE, value: S.value || CLIENT_VEHICLE.value, aiValue: S.aiValue || CLIENT_VEHICLE.value },
+    ds, results, selected: [], leadIds: [] };
+  s.log = buildLog(ds, results, s.vehicle.value);
   S.searches.unshift(s); S.searchId = s.id;
   recordCalls(s);
   return s;
@@ -1160,7 +1183,7 @@ const COV_EN = { collision: 'collision', theft: 'theft', nature: 'natural_disast
 const agentRequest = s => ({ request_id: s.id, product: 'casco', categories: CATS.map(c => c.id),
   vehicle: { vin: s.vehicle.vin, make: s.vehicle.make, model: s.vehicle.model, year: s.vehicle.year, body: BODY_EN[s.vehicle.body] || s.vehicle.body,
     engine_cc: Math.round(parseFloat(s.vehicle.engine) * 1000), fuel: FUEL_EN[s.vehicle.fuel] || s.vehicle.fuel, color: s.vehicle.color },
-  estimated_value_gel: s.vehicle.value, respond_within_ms: 5000 });
+  market_value_gel: s.vehicle.aiValue || s.vehicle.value, insured_value_gel: s.vehicle.value, respond_within_ms: AGENT_TIMEOUT_MS });
 const agentResponse = r => ({
   offers: Object.entries(r.offers || {}).map(([c, x]) => ({ category: c, annual_premium_gel: x.premium, sum_insured_gel: x.sum, deductible_gel: x.deductible, coverage: x.cov.map(k => COV_EN[k]) })),
   declines: Object.entries(r.declines || {}).map(([c, reason]) => ({ category: c, reason })) });
@@ -1298,7 +1321,7 @@ function viewAdmRequest() {
           ${row('ტელეფონი', '+995 ' + fmtPhone(c.phone))}
           <div><dt class="text-xs text-zinc-500">არხები</dt><dd class="mt-1 flex flex-wrap items-center gap-1">${c.channels.map(id => `<span class="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-1.5 py-0.5 text-xs">${chById(id).label}${id === c.preferred ? '<i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>' : ''}</span>`).join('')}</dd></div>
         </dl>
-        <p class="mt-4 text-xs text-zinc-500">მისამართი სადაზღვევოებს არასოდეს გადაეცემა.</p>
+        <p class="mt-4 text-xs text-zinc-500">მისამართი სადაზღვევოებს არასოდეს გადაეცემა.${s.consentAt ? ` თანხმობა მონაცემების გაზიარებაზე: ${fmtDate(s.consentAt)}.` : ''}</p>
       </div>
       <div class="card p-5">
         <h2 class="flex items-center gap-2 font-semibold"><i data-lucide="scan-line" class="h-4 w-4"></i>ტექპასპორტის მონაცემები (OCR)</h2>
@@ -1308,9 +1331,11 @@ function viewAdmRequest() {
         </dl>
       </div>
       <div class="card p-5">
-        <h2 class="flex items-center gap-2 font-semibold"><i data-lucide="sparkles" class="h-4 w-4"></i>AI შეფასება</h2>
-        <div class="mt-4 text-3xl font-bold tracking-tight">≈ ${money(v.value)}</div>
-        <p class="mt-1 text-sm text-zinc-500">საბაზრო ღირებულება, რომელიც აგენტებს გადაეცა. კლიენტს არ ეჩვენება.</p>
+        <h2 class="flex items-center gap-2 font-semibold"><i data-lucide="sparkles" class="h-4 w-4"></i>ღირებულება</h2>
+        <div class="mt-4 text-3xl font-bold tracking-tight">${money(v.value)}</div>
+        <p class="mt-1 text-sm text-zinc-500">${v.aiValue && v.aiValue !== v.value
+          ? `კლიენტმა შეცვალა. AI-ის შეფასება: ${money(v.aiValue)} (სხვაობა: ${v.value > v.aiValue ? '+' : ''}${Math.round((v.value - v.aiValue) / v.aiValue * 100)}%)`
+          : 'კლიენტმა დაადასტურა AI-ის საბაზრო შეფასება.'}</p>
         <div class="mt-4 rounded-lg bg-zinc-50 p-3 text-xs text-zinc-600">აუქციონზე გადაეცა: VIN, მარკა, მოდელი, წელი, ძარა, ძრავა, საწვავი, ფერი. <b>არ გადაეცა:</b> სახელმწიფო ნომერი და პირადი მონაცემები.</div>
       </div>
     </div>
@@ -1318,7 +1343,7 @@ function viewAdmRequest() {
     <div class="mt-6 grid gap-6 xl:grid-cols-[1fr_1.4fr]">
       <div class="card p-5">
         <h2 class="flex items-center gap-2 font-semibold"><i data-lucide="scroll-text" class="h-4 w-4"></i>აუქციონის ლოგი</h2>
-        <ol class="mt-3 divide-y divide-zinc-100">${s.log.map(x => `<li class="flex items-start gap-3 py-2 text-sm"><span class="w-12 shrink-0 pt-0.5 text-right font-mono text-xs text-zinc-400">${x.t.toFixed(1)} წმ</span><i data-lucide="${LOGI[x.kind][0]}" class="mt-0.5 h-4 w-4 shrink-0 ${LOGI[x.kind][1]}"></i><span class="${x.kind === 'done' ? 'font-semibold' : ''}">${esc((x.name ? x.text.replace(x.name, INSURERS[x.insurer].name) : x.text).replace('…', ''))}</span></li>`).join('')}</ol>
+        <ol class="mt-3 divide-y divide-zinc-100">${s.log.map(x => `<li class="flex items-start gap-3 py-2 text-sm"><span class="w-12 shrink-0 pt-0.5 text-right font-mono text-xs text-zinc-400">${x.t.toFixed(1)} წმ</span><i data-lucide="${LOGI[x.kind][0]}" class="mt-0.5 h-4 w-4 shrink-0 ${LOGI[x.kind][1]}"></i><span class="${x.kind === 'done' ? 'font-semibold' : ''}">${esc((x.name ? x.text.replace(x.name, INSURERS[x.insurer || x.who].name) : x.text).replace('…', ''))}</span></li>`).join('')}</ol>
       </div>
       <div class="card overflow-x-auto p-5">
         <h2 class="flex items-center gap-2 font-semibold"><i data-lucide="table-2" class="h-4 w-4"></i>ყველა შეთავაზება</h2>
@@ -1338,10 +1363,10 @@ function viewAdmRequest() {
         <p class="mt-1 text-xs text-zinc-500">POST · Content-Type: application/json · ყველა აგენტს ერთი და იგივე მოთხოვნა ეგზავნება.</p>
         <div class="mt-3 space-y-2">${s.ds.map(r => `<details class="group rounded-lg border border-zinc-200">
           <summary class="flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-sm">${insAvatar(r.id, 'h-6 w-6')}<span class="font-medium">${INSURERS[r.id].name}</span>
-            <span class="ml-auto text-xs ${r.timeout ? 'text-amber-600' : 'text-emerald-700'}">${r.timeout ? 'დრო ამოიწურა · > 5 000 მწმ' : `200 OK · ${Math.round((r.t - 1) * 1000)} მწმ`}</span><i data-lucide="chevron-down" class="h-4 w-4 text-zinc-400 transition group-open:rotate-180"></i></summary>
+            <span class="ml-auto text-xs ${r.timeout ? 'text-amber-600' : 'text-emerald-700'}">${r.timeout ? 'დრო ამოიწურა · > 8 000 მწმ' : `200 OK · ${Math.round((r.t - SENT_AT) * 1000)} მწმ`}</span><i data-lucide="chevron-down" class="h-4 w-4 text-zinc-400 transition group-open:rotate-180"></i></summary>
           <div class="grid gap-3 border-t border-zinc-200 p-3 lg:grid-cols-2">
             <div><div class="text-xs font-medium text-zinc-500">მოთხოვნა → ${esc(S.meta[r.id] ? S.meta[r.id].endpoint : '—')}</div>${pre(agentRequest(s))}</div>
-            <div><div class="text-xs font-medium text-zinc-500">პასუხი</div>${r.timeout ? '<div class="mt-2 rounded-lg bg-amber-50 p-3 text-xs text-amber-800">პასუხი 5 000 მწმ-ში არ მოვიდა. აგენტი ამ აუქციონიდან გამოირიცხა.</div>' : pre(agentResponse(r))}</div>
+            <div><div class="text-xs font-medium text-zinc-500">პასუხი</div>${r.timeout ? '<div class="mt-2 rounded-lg bg-amber-50 p-3 text-xs text-amber-800">პასუხი 8 000 მწმ-ში არ მოვიდა. აგენტი ამ აუქციონიდან გამოირიცხა.</div>' : pre(agentResponse(r))}</div>
           </div></details>`).join('')}</div>
       </div>
       <div class="card p-5">
@@ -1394,7 +1419,7 @@ function viewAdmInsurers() {
 }
 
 function newForm(id) {
-  if (!id) return { name: '', desc: '', endpoint: 'https://', auth: 'apikey', timeout: 5, creds: {}, firstUser: '', test: null, errors: [] };
+  if (!id) return { name: '', desc: '', endpoint: 'https://', auth: 'apikey', timeout: 8, creds: {}, firstUser: '', test: null, errors: [] };
   const m = S.meta[id];
   return { name: INSURERS[id].name, desc: m.desc || '', endpoint: m.endpoint, auth: m.auth, timeout: m.timeout, creds: { ...m.creds }, test: null, errors: [] };
 }
@@ -1599,7 +1624,7 @@ const ADMIN_ACTIONS = {
   'demo-only': () => toast('პროტოტიპში ფაილი არ იტვირთება.', 'download'),
   'form-demo-fill': () => {
     Object.assign(S.form, { name: 'რიონი დაზღვევა', desc: 'ახალი პარტნიორი, პილოტური პერიოდი 3 თვე.', endpoint: 'https://agent.rioni.example/dazgveva/v1/quote',
-      auth: 'oauth', timeout: 5, firstUser: 'rioni.nino', creds: { tokenUrl: 'https://auth.rioni.example/oauth/token', clientId: 'dazgveva-platform', clientSecret: 'rioni-' + rnd(16), scope: 'quotes' }, errors: [] });
+      auth: 'oauth', timeout: 8, firstUser: 'rioni.nino', creds: { tokenUrl: 'https://auth.rioni.example/oauth/token', clientId: 'dazgveva-platform', clientSecret: 'rioni-' + rnd(16), scope: 'quotes' }, errors: [] });
     render();
   },
   'ins-test': () => {
@@ -1719,9 +1744,177 @@ document.addEventListener('keydown', e => {
   if (e.target.id === 'del-confirm' && !$('#del-btn').disabled) $('#del-btn').click();
 });
 
+/* ============================== VALUATION (step 2: market value) ============================== */
+/* Asking prices of comparable listings (Toyota Camry, 2017–2019). Deterministic for the demo and
+   shifted so that their median is exactly the demo car's value. */
+const MARKET = (() => {
+  let x = 966118; const r = () => (x = (x * 16807) % 2147483647) / 2147483647;
+  const raw = Array.from({ length: 38 }, () => VEHICLE.value + (r() + r() + r() - 1.5) * 9000).sort((a, b) => a - b);
+  const med = (raw[18] + raw[19]) / 2;
+  return raw.map(v => Math.round((v - med + VEHICLE.value) / 100) * 100);
+})();
+const quantile = (arr, q) => { const i = (arr.length - 1) * q, a = Math.floor(i); return arr[a] + (arr[Math.ceil(i)] - arr[a]) * (i - a); };
+const MARKET_STATS = {
+  median: Math.round(quantile(MARKET, 0.5) / 500) * 500,
+  p25: Math.round(quantile(MARKET, 0.25) / 100) * 100,
+  p75: Math.round(quantile(MARKET, 0.75) / 100) * 100,
+};
+const MARKET_BINS = (() => {
+  const w = 2000, lo = Math.floor(MARKET[0] / w) * w, hi = Math.ceil((MARKET[MARKET.length - 1] + 1) / w) * w;
+  const bins = [];
+  for (let f = lo; f < hi; f += w) bins.push({ from: f, to: f + w, n: MARKET.filter(v => v >= f && v < f + w).length });
+  return { lo, hi, bins };
+})();
+const VALUE_STEP = 500;
+const valueMin = () => Math.round(S.aiValue * 0.6 / VALUE_STEP) * VALUE_STEP;
+const valueMax = () => Math.round(S.aiValue * 1.4 / VALUE_STEP) * VALUE_STEP;
+const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const valueOk = v => Number.isFinite(v) && v >= valueMin() && v <= valueMax();
+
+function startValuation() {
+  S.valuating = 1; render();
+  timers.push(setTimeout(() => { S.valuating = 2; render(); }, 1300));
+  timers.push(setTimeout(() => {
+    S.valuating = 0; S.aiValue = MARKET_STATS.median;
+    if (!S.value) S.value = S.aiValue;
+    render();
+  }, 2700));
+}
+
+/* Single-series histogram: no legend (the title names it), per-bar tooltip on hover/focus,
+   labelled markers for the AI estimate and the client's own value, and a table twin. */
+function valueChart() {
+  const { lo, hi, bins } = MARKET_BINS, top = Math.max(...bins.map(b => b.n));
+  const pos = v => Math.min(100, Math.max(0, (v - lo) / (hi - lo) * 100));
+  const own = S.valueMode === 'own' && S.value !== S.aiValue;
+  return `<figure class="mt-6">
+    <figcaption class="text-sm font-medium">მსგავსი ავტომობილების ფასები ბაზარზე</figcaption>
+    <p class="text-xs text-zinc-500">${MARKET.length} განცხადება · Toyota Camry, 2017–2019 · ერთი სვეტი = 2 000 ₾ დიაპაზონი</p>
+    <div class="relative mt-9 h-36">
+      <div class="flex h-full items-end gap-[2px]">
+        ${bins.map(b => `<div tabindex="0" class="group relative h-full flex-1 outline-none" aria-label="${num(b.from)}–${num(b.to)} ₾: ${b.n} განცხადება">
+          <div class="absolute inset-x-0 bottom-0 rounded-t bg-sky-200 transition group-hover:bg-sky-400 group-focus:bg-sky-400" style="height:${b.n ? Math.max(4, b.n / top * 100) : 0}%"></div>
+          <div class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2 py-1 text-[11px] text-white shadow group-hover:block group-focus:block">${num(b.from)}–${num(b.to)} ₾ · ${b.n} განცხ.</div>
+        </div>`).join('')}
+      </div>
+      <div class="pointer-events-none absolute inset-y-0 border-l-2 border-dashed border-[#263A5C]" style="left:${pos(S.aiValue)}%">
+        <span class="absolute -top-7 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#263A5C] px-1.5 py-0.5 text-[11px] font-medium text-white">AI: ${money(S.aiValue)}</span>
+      </div>
+      <div id="own-marker" class="pointer-events-none absolute inset-y-0 border-l-2 border-sky-600 ${own ? '' : 'hidden'}" style="left:${pos(S.value)}%">
+        <span id="own-marker-label" class="absolute top-1 ${pos(S.value) > 70 ? 'right-1' : 'left-1'} whitespace-nowrap rounded-md bg-sky-600 px-1.5 py-0.5 text-[11px] font-medium text-white">შენი: ${money(S.value)}</span>
+      </div>
+    </div>
+    <div class="mt-1.5 flex justify-between border-t border-zinc-200 pt-1 text-[11px] text-zinc-400"><span>${num(lo)} ₾</span><span>${num((lo + hi) / 2)} ₾</span><span>${num(hi)} ₾</span></div>
+    <details class="mt-3 text-xs">
+      <summary class="cursor-pointer text-zinc-500 hover:text-zinc-900">ცხრილის სახით</summary>
+      <table class="mt-2 w-full max-w-xs text-left"><thead class="text-zinc-500"><tr><th class="py-1 font-medium">ფასი (₾)</th><th class="py-1 text-right font-medium">განცხადება</th></tr></thead>
+        <tbody class="divide-y divide-zinc-100">${bins.map(b => `<tr><td class="py-1">${num(b.from)}–${num(b.to)}</td><td class="py-1 text-right">${b.n}</td></tr>`).join('')}</tbody></table>
+    </details>
+  </figure>`;
+}
+
+function viewValue() {
+  const v = CLIENT_VEHICLE;
+  const car = `<p class="mt-3 flex items-center gap-1.5 text-sm text-zinc-500"><i data-lucide="car" class="h-4 w-4"></i>${v.make} ${v.model} · ${v.year} · ${v.engine} ${v.fuel}</p>`;
+  if (S.valuating || !S.aiValue) {
+    const steps = ['ვეძებთ მსგავს განცხადებებს ბაზარზე', 'ვითვლით საშუალო ფასს'];
+    return `<section class="mx-auto max-w-2xl px-4 py-8 fade-in">
+      <div class="mb-6">${stepper(1)}</div>
+      <h1 class="text-2xl font-bold tracking-tight">ავტომობილის ღირებულება</h1>${car}
+      <div class="card mt-6 p-6"><ul class="space-y-3 text-sm">${steps.map((t, i) => {
+        const done = S.valuating > i + 1 || !S.valuating, cur = S.valuating === i + 1;
+        return `<li class="flex items-center gap-3 ${done || cur ? 'text-zinc-900' : 'text-zinc-400'}">${done ? '<i data-lucide="circle-check" class="h-4 w-4 text-emerald-600"></i>' : cur ? '<i data-lucide="loader-circle" class="h-4 w-4 animate-spin"></i>' : '<i data-lucide="circle" class="h-4 w-4"></i>'}${t}…</li>`;
+      }).join('')}</ul></div>
+    </section>`;
+  }
+  const own = S.valueMode === 'own';
+  const option = (id, title, right) => `<button type="button" data-act="value-mode" data-id="${id}" role="radio" aria-checked="${S.valueMode === id}"
+      class="flex w-full items-center gap-3 rounded-xl border p-4 text-left transition ${S.valueMode === id ? 'border-zinc-900 ring-1 ring-zinc-900' : 'border-zinc-200 hover:border-zinc-400'}">
+      <span class="grid h-4 w-4 shrink-0 place-items-center rounded-full border ${S.valueMode === id ? 'border-zinc-900' : 'border-zinc-400'}">${S.valueMode === id ? '<span class="h-2 w-2 rounded-full bg-zinc-900"></span>' : ''}</span>
+      <span class="flex-1 text-sm font-medium">${title}</span>${right}</button>`;
+  return `<section class="mx-auto max-w-2xl px-4 py-8 fade-in">
+    <div class="mb-6">${stepper(1)}</div>
+    <h1 class="text-2xl font-bold tracking-tight">ავტომობილის ღირებულება</h1>
+    <p class="mt-2 text-zinc-600">AI-მ ბაზარზე მსგავსი ავტომობილების ფასები გააანალიზა. ამ ღირებულებით განისაზღვრება სადაზღვევო თანხა.</p>
+    ${car}
+    <div class="card mt-6 p-5">
+      <div class="flex items-center gap-1.5 text-sm text-zinc-500"><i data-lucide="sparkles" class="h-4 w-4"></i>AI-ის შეფასება</div>
+      <div class="mt-1 text-4xl font-bold tracking-tight text-[#263A5C]">${money(S.aiValue)}</div>
+      <p class="mt-1 text-sm text-zinc-500">მსგავსი განცხადებების საშუალო (მედიანა). ფასების უმეტესობა: ${money(MARKET_STATS.p25)} – ${money(MARKET_STATS.p75)}.</p>
+      ${valueChart()}
+    </div>
+    <div class="mt-6 space-y-3" role="radiogroup" aria-label="რა ღირებულებით დავაზღვიოთ?">
+      <div class="text-sm font-medium">რა ღირებულებით დავაზღვიოთ?</div>
+      ${option('ai', 'ვეთანხმები AI-ის შეფასებას', `<span class="text-sm font-semibold">${money(S.aiValue)}</span>`)}
+      ${option('own', 'მივუთითებ საკუთარ ღირებულებას', '<i data-lucide="pencil" class="h-4 w-4 text-zinc-400"></i>')}
+      ${own ? `<div class="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4">
+        <label for="val-input" class="text-sm font-medium">შენი ღირებულება</label>
+        <div class="mt-2 flex items-center gap-3">
+          <div class="flex"><input id="val-input" type="number" inputmode="numeric" min="${valueMin()}" max="${valueMax()}" step="${VALUE_STEP}" value="${S.value}"
+            class="h-11 w-36 rounded-l-lg border border-zinc-200 bg-white px-3 text-lg font-semibold outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10"><span class="inline-flex items-center rounded-r-lg border border-l-0 border-zinc-200 bg-white px-3 text-zinc-500">₾</span></div>
+          <span id="val-diff" class="text-sm text-zinc-500"></span>
+        </div>
+        <input id="val-range" type="range" min="${valueMin()}" max="${valueMax()}" step="${VALUE_STEP}" value="${valueOk(S.value) ? S.value : S.aiValue}" class="mt-4 w-full accent-[#263A5C]" aria-label="ღირებულების შერჩევა">
+        <div class="flex justify-between text-[11px] text-zinc-400"><span>${money(valueMin())}</span><span>${money(valueMax())}</span></div>
+        <p id="val-error" class="mt-2 hidden text-sm text-rose-600"></p>
+        <p id="val-warn" class="mt-2 hidden items-start gap-2 rounded-lg bg-amber-50 p-2.5 text-xs text-amber-900"><i data-lucide="triangle-alert" class="mt-0.5 h-3.5 w-3.5 shrink-0"></i>საბაზროსგან მნიშვნელოვნად განსხვავებულ ღირებულებას სადაზღვევო შეიძლება ხელახლა შეამოწმოს.</p>
+        <p class="mt-3 flex items-start gap-2 text-xs text-zinc-500"><i data-lucide="info" class="mt-0.5 h-3.5 w-3.5 shrink-0"></i>მეტი ღირებულება — მეტი სადაზღვევო თანხა და პრემია. ნაკლები — ზარალისას ანაზღაურება შეიძლება არ იყოს საკმარისი.</p>
+      </div>` : ''}
+    </div>
+    <div class="mt-6 flex items-center justify-between gap-3">
+      <button data-act="home" class="btn btn-ghost"><i data-lucide="arrow-left" class="h-4 w-4"></i>უკან</button>
+      <button id="to-contact" data-act="to-contact" class="btn btn-primary btn-lg">გაგრძელება<i data-lucide="arrow-right" class="h-4 w-4"></i></button>
+    </div>
+  </section>`;
+}
+
+/* Live updates while typing / dragging (no re-render, so focus is kept) */
+function updateValueUI() {
+  const inp = $('#val-input'); if (!inp) return;
+  const v = S.value, ok = valueOk(v);
+  const pct = ok ? Math.round((v - S.aiValue) / S.aiValue * 100) : 0;
+  $('#val-diff').textContent = !ok ? '' : pct === 0 ? 'ემთხვევა AI-ის შეფასებას' : `სხვაობა AI-ის შეფასებასთან: ${pct > 0 ? '+' : ''}${pct}%`;
+  const err = $('#val-error');
+  err.textContent = ok ? '' : `ღირებულება უნდა იყოს ${money(valueMin())} – ${money(valueMax())} ფარგლებში.`;
+  err.classList.toggle('hidden', ok);
+  inp.classList.toggle('border-rose-400', !ok);
+  const warn = $('#val-warn'); warn.classList.toggle('hidden', !ok || Math.abs(pct) <= 15); warn.classList.toggle('flex', ok && Math.abs(pct) > 15);
+  $('#to-contact').disabled = !ok;
+  const { lo, hi } = MARKET_BINS, p = Math.min(100, Math.max(0, (v - lo) / (hi - lo) * 100));
+  const m = $('#own-marker'), lab = $('#own-marker-label');
+  m.classList.toggle('hidden', !ok || v === S.aiValue);
+  m.style.left = p + '%';
+  lab.textContent = `შენი: ${money(ok ? v : S.aiValue)}`;
+  lab.classList.toggle('right-1', p > 70); lab.classList.toggle('left-1', p <= 70);
+}
+
+const VALUE_ACTIONS = {
+  'value-mode': el => {
+    S.valueMode = el.dataset.id;
+    if (S.valueMode === 'ai') S.value = S.aiValue;
+    render();
+    if (S.valueMode === 'own') { updateValueUI(); const i = $('#val-input'); if (i) { i.focus(); i.select(); } }
+  },
+  'to-contact': () => {
+    if (S.valueMode === 'ai') S.value = S.aiValue;
+    if (!valueOk(S.value)) return;
+    go('contact');
+  },
+  'to-value': () => go('value'),
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const h = VALUE_ACTIONS[el.dataset.act];
+  if (h) { e.preventDefault(); h(el); }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'val-input') { S.value = Math.round(+e.target.value); if (valueOk(S.value)) $('#val-range').value = S.value; updateValueUI(); }
+  if (e.target.id === 'val-range') { S.value = +e.target.value; $('#val-input').value = S.value; updateValueUI(); }
+});
+
 /* ============================== RENDER ============================== */
 function render() {
-  const views = { home: viewHome, contact: viewContact, auction: viewAuction, offers: viewOffers, done: viewDone,
+  const views = { home: viewHome, value: viewValue, contact: viewContact, auction: viewAuction, offers: viewOffers, done: viewDone,
     'ins-list': viewInsList, 'ins-detail': viewInsDetail, 'ins-api': viewInsApi, 'ins-profile': viewInsProfile,
     'adm-overview': viewAdmOverview, 'adm-requests': viewAdmRequests, 'adm-request': viewAdmRequest, 'adm-insurers': viewAdmInsurers,
     'adm-ins-form': viewAdmInsForm, 'adm-users': viewAdmUsers, login: viewLogin, pwchange: viewPwChange };
@@ -1733,6 +1926,7 @@ function render() {
   nav.classList.toggle('hidden', !S.navOpen);
   nav.innerHTML = S.navOpen ? viewNav() : '';
   bindDynamic();
+  updateValueUI();
   icons();
 }
 
@@ -1757,8 +1951,6 @@ function bindDynamic() {
       ph.classList.toggle('border-rose-400', !!bad);
     });
   }
-  const cs = $('#consent');
-  if (cs) cs.addEventListener('change', () => { S.consent = cs.checked; $('#send').disabled = !(S.selected.size && S.consent); });
 }
 
 /* ============================== UPLOADS ============================== */
@@ -1766,6 +1958,7 @@ const validFile = f => (/^image\/(jpeg|png|heic|heif)$/.test(f.type) || /\.(jpe?
 function setSide(side, val) {
   if (S[side] && S[side].url.startsWith('blob:')) URL.revokeObjectURL(S[side].url);
   S[side] = val;
+  S.aiValue = S.value = null; S.valueMode = 'ai';
 }
 /* Files fill the next empty side (front, then back); a replace targets one side. */
 function acceptFiles(files, side) {
@@ -1851,7 +2044,7 @@ document.addEventListener('click', e => {
       S.processing = true; S.scanError = false; render();
       timers.push(setTimeout(() => {
         S.processing = false;
-        if (S.failScan) { S.scanError = true; render(); } else go('contact');
+        if (S.failScan) { S.scanError = true; render(); } else go('value');
       }, 2000));
       break;
     case 'pref':
