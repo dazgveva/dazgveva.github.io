@@ -29,14 +29,21 @@ export function ModalHost() {
   return <div className="fixed inset-0 z-[55] overflow-y-auto"><ModalBody m={m} /></div>;
 }
 
+/** Bottom sheet on phones (thumb reach, safe-area aware), centred card from sm up. */
 function Dialog({ children, wide, dark, role = 'dialog' }: { children: ReactNode; wide?: boolean; dark?: boolean; role?: string }) {
   return (
     <>
       <div onClick={closeModal} className={cn('absolute inset-0', dark ? 'bg-black/60' : 'bg-black/40')} />
-      <div role={role} aria-modal="true" className={cn('relative mx-auto mt-[14vh] w-[calc(100%-2rem)] animate-fade-in rounded-xl bg-white p-6 shadow-xl', wide ? 'max-w-lg' : 'max-w-md')}>{children}</div>
+      <div className="pointer-events-none relative flex min-h-full flex-col justify-end sm:block">
+        <div role={role} aria-modal="true" className={cn('pointer-events-auto relative max-h-[90dvh] w-full animate-sheet-up overflow-y-auto rounded-t-2xl bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl sm:mx-auto sm:mt-[14vh] sm:max-h-none sm:w-[calc(100%-2rem)] sm:animate-fade-in sm:rounded-xl sm:p-6', wide ? 'sm:max-w-lg' : 'sm:max-w-md')}>
+          <div className="mx-auto -mt-1 mb-4 h-1 w-10 rounded-full bg-zinc-200 sm:hidden" />{children}
+        </div>
+      </div>
     </>
   );
 }
+/** Dialog buttons: equal-width and full-row on phones, right-aligned from sm up. */
+const ACTIONS = 'mt-6 flex flex-wrap justify-end gap-2 [&>button]:flex-1 sm:[&>button]:flex-none';
 
 function ModalBody({ m }: { m: Modal }) {
   if (m.type === 'confirm') return <ConfirmReveal l={leadById(m.id)!} />;
@@ -45,7 +52,7 @@ function ModalBody({ m }: { m: Modal }) {
     <Dialog>
       <h2 className="text-lg font-semibold">დაარქივება: {INSURERS[m.id].name}</h2>
       <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600"><li>ახალ აუქციონებზე აღარ მიიწვევა.</li><li>მისი მომხმარებლები ვეღარ შევლენ პორტალში.</li><li>ძველი ძიებები და მოთხოვნები შენარჩუნდება. აღდგენა ნებისმიერ დროს შეიძლება.</li></ul>
-      <div className="mt-6 flex justify-end gap-2">
+      <div className={ACTIONS}>
         <button onClick={closeModal} className={btn('outline')}>გაუქმება</button>
         <button onClick={() => archiveInsurer(m.id)} className={btn('primary')}><Icon name="archive" className="h-4 w-4" />დაარქივება</button>
       </div>
@@ -58,21 +65,18 @@ function ModalBody({ m }: { m: Modal }) {
 
 function ConfirmReveal({ l }: { l: Lead }) {
   return (
-    <>
-      <div onClick={closeModal} className="absolute inset-0 bg-black/40" />
-      <div role="alertdialog" aria-modal="true" className="relative mx-auto mt-[18vh] w-[calc(100%-2rem)] max-w-md animate-fade-in rounded-xl bg-white p-6 shadow-xl">
+    <Dialog role="alertdialog">
         <h2 className="text-lg font-semibold">საკონტაქტო ინფორმაციის მოთხოვნა</h2>
         <p className="mt-2 text-sm text-zinc-600">მოთხოვნის შემდეგ კლიენტის მონაცემები გაგეხსნებათ, ეს ქმედება დაფიქსირდება და კლიენტი მიიღებს შეტყობინებას, რომ მალე დაუკავშირდებით.</p>
         <div className="mt-4 flex flex-wrap items-center gap-2 rounded-lg bg-zinc-50 p-3 text-sm"><b>{initials(l.client)}</b><span className="text-zinc-400">·</span>{carName(l.vehicle)}<span className="text-zinc-400">·</span><PkgBadges l={l} /></div>
-        <div className="mt-6 flex justify-end gap-2">
+        <div className={ACTIONS}>
           <button onClick={closeModal} className={btn('outline')}>გაუქმება</button>
           <button onClick={() => {
             revealLead(l); S.modal = null; S.leadId = l.id; go('ins-detail', { id: l.id });
             toast(`საკონტაქტო ინფორმაცია გაიხსნა. კლიენტს ეცნობა (${msgChannel(l)}).`, 'lock-open', { label: 'ნახვა', run: () => { S.modal = { type: 'phone', id: l.id, msg: 'reveal' }; emit(); } });
           }} className={btn('primary')}>დადასტურება</button>
         </div>
-      </div>
-    </>
+    </Dialog>
   );
 }
 
@@ -83,9 +87,9 @@ function Phone({ l, msg }: { l: Lead; msg: 'reveal' | 'expiry' }) {
   return (
     <>
       <div onClick={closeModal} className="absolute inset-0 bg-black/60" />
-      <div className="relative mx-auto flex w-[320px] animate-fade-in flex-col items-center py-6">
+      <div className="relative mx-auto flex w-[320px] max-w-full animate-fade-in flex-col items-center py-4 sm:py-6">
         <div className="mb-3 text-center text-sm text-white"><div className="font-semibold">კლიენტის ტელეფონი (დემო)</div><div className="opacity-80">{initials(l.client)} · არხი: {msgChannel(l)}</div></div>
-        <div className="flex h-[560px] w-[300px] flex-col overflow-hidden rounded-[2.6rem] border-[10px] border-zinc-900 bg-white shadow-2xl">
+        <div className="flex h-[min(560px,calc(100dvh-9.5rem))] w-[300px] flex-col overflow-hidden rounded-[2.6rem] border-[10px] border-zinc-900 bg-white shadow-2xl">
           <div className="flex items-center justify-between px-5 pb-1 pt-2 text-[11px] font-semibold" style={{ background: app.head, color: app.fg }}>
             <span>{time}</span><span className="flex items-center gap-1"><Icon name="signal" className="h-3 w-3" /><Icon name="wifi" className="h-3 w-3" /><Icon name="battery-full" className="h-3.5 w-3.5" /></span>
           </div>
@@ -124,7 +128,7 @@ function DeleteInsurer({ id }: { id: string }) {
       <p className="mt-3 text-sm text-zinc-600">ძველი ძიებები და მოთხოვნები დარჩება — სადაზღვევო მათში გამოჩნდება როგორც „წაშლილი სადაზღვევო“.</p>
       <label className="mt-4 block text-sm">დასადასტურებლად ჩაწერეთ <b className="select-all rounded-sm bg-zinc-100 px-1">{n}</b>
         <input ref={ref} value={typed} onChange={e => setTyped(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && ok) deleteInsurer(id); }} autoComplete="off"
-          className="mt-2 h-10 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-hidden focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20" /></label>
+          className="mt-2 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20" /></label>
       <button disabled={!ok} onClick={() => deleteInsurer(id)} className={btn('danger', 'md', 'mt-4 w-full')}>მესმის, წაშალე სამუდამოდ</button>
     </Dialog>
   );
@@ -141,7 +145,7 @@ function Otp({ m }: { m: Extract<Modal, { type: 'otp' }> }) {
           <span className="flex items-center gap-1 font-mono font-semibold">{m.p}<CopyBtn text={m.p} /></span></div>
       </div>
       <p className="mt-3 text-xs text-zinc-500">გადაეცით მომხმარებელს უსაფრთხო არხით. ეს პაროლი მეორედ აღარ გამოჩნდება; პირველი შესვლისას მისი შეცვლა სავალდებულოა.</p>
-      <div className="mt-6 flex flex-wrap justify-end gap-2">
+      <div className={ACTIONS}>
         <button onClick={() => { S.modal = null; S.session = null; S.login = { u: m.u, p: m.p, error: null, hint: { u: m.u, p: m.p } }; go('login'); }}
           className={btn('outline', 'md', 'border-dashed border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100')}>დემო: შესვლა ამ მომხმარებლით</button>
         <button onClick={closeModal} className={btn('primary')}>მზადაა</button>
@@ -153,7 +157,7 @@ function Otp({ m }: { m: Extract<Modal, { type: 'otp' }> }) {
 function AddUser({ ins }: { ins?: string }) {
   const [name, setName] = useState(''), [role, setRole] = useState<User['role']>('partner'), [insurer, setInsurer] = useState(ins || activeInsurers()[0]);
   const [err, setErr] = useState('');
-  const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm outline-hidden focus:border-zinc-900';
+  const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-base sm:text-sm outline-hidden focus:border-zinc-900';
   return (
     <Dialog>
       <h2 className="text-lg font-semibold">მომხმარებლის დამატება</h2>
@@ -167,7 +171,7 @@ function AddUser({ ins }: { ins?: string }) {
           <select value={insurer} onChange={e => setInsurer(e.target.value)} className={field}>{activeInsurers().map(id => <option key={id} value={id}>{INSURERS[id].name}</option>)}</select></label>
         {err && <p className="text-sm text-rose-600">{err}</p>}
       </div>
-      <div className="mt-6 flex justify-end gap-2">
+      <div className={ACTIONS}>
         <button onClick={closeModal} className={btn('outline')}>გაუქმება</button>
         <button onClick={() => setErr(addUser(name.trim(), role, insurer) || '')} className={btn('primary')}>დამატება</button>
       </div>
@@ -178,6 +182,6 @@ function AddUser({ ins }: { ins?: string }) {
 export function CopyBtn({ text }: { text: string }) {
   return (
     <button onClick={() => { try { navigator.clipboard.writeText(text); } catch { /* clipboard may be unavailable */ } toast('დაკოპირდა.', 'copy'); }}
-      title="კოპირება" className={btn('ghost', 'sm', 'h-6 px-1.5')}><Icon name="copy" className="h-3.5 w-3.5" /></button>
+      title="კოპირება" className={btn('ghost', 'sm', 'h-8 px-2 sm:h-6 sm:px-1.5')}><Icon name="copy" className="h-3.5 w-3.5" /></button>
   );
 }
