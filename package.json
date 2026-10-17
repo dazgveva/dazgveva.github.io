@@ -1,0 +1,28 @@
+{
+  "name": "dazgveva-demo",
+  "version": "3.0.0",
+  "private": true,
+  "description": "dazgveva.ge V3 demo — static Next.js app, exported to /docs for GitHub Pages",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node scripts/export-docs.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@heroicons/react": "2.2.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "0.469.0",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

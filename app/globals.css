@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* Theme tokens only: fonts (from next/font) and the demo's three animations. */
+@theme {
+  --font-sans: var(--font-inter), var(--font-georgian), system-ui, sans-serif;
+
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-sheet-in: sheet-in 0.25s ease-out both;
+  --animate-sheet-up: sheet-up 0.25s ease-out both;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes sheet-in {
+    from { transform: translateX(100%); }
+    to { transform: none; }
+  }
+  @keyframes sheet-up {
+    from { transform: translateY(100%); }
+    to { transform: none; }
+  }
+}
