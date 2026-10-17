@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
-/* Theme tokens only: fonts (from next/font) and the demo's three animations. */
+/* Theme tokens only: fonts (from next/font), brand colours and the demo's three animations. */
 @theme {
   --font-sans: var(--font-inter), var(--font-georgian), system-ui, sans-serif;
+
+  /* Brand colours: emerald (primary, brand-500 = #059F64) and midnight navy (secondary,
+     navy-900 = #0E2745). An analogous pair: both lean blue, so they sit together calmly.
+     Scales are generated in OKLCH (green hue 158, navy hue 255). Filled buttons use
+     brand-600 with white text (5.2:1); green text uses brand-700+ (7.3:1). */
+  --color-brand-50: #ebfef2;
+  --color-brand-100: #d5fbe4;
+  --color-brand-200: #aef4cb;
+  --color-brand-300: #7de8ad;
+  --color-brand-400: #41ce8a;
+  --color-brand-500: #059f64;
+  --color-brand-600: #027d4d;
+  --color-brand-700: #08633d;
+  --color-brand-800: #034d2e;
+  --color-brand-900: #033b22;
+  --color-brand-950: #012111;
+
+  --color-navy-50: #f2f7fe;
+  --color-navy-100: #e0ecfc;
+  --color-navy-200: #c4daf5;
+  --color-navy-300: #9dbde7;
+  --color-navy-400: #6f98cc;
+  --color-navy-500: #4a76ae;
+  --color-navy-600: #315c92;
+  --color-navy-700: #234877;
+  --color-navy-800: #183860;
+  --color-navy-900: #0e2745;
+  --color-navy-950: #05162c;
 
   --animate-fade-in: fade-in 0.35s ease-out both;
   --animate-sheet-in: sheet-in 0.25s ease-out both;
