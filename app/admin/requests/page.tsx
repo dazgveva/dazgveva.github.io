@@ -42,7 +42,7 @@ function Requests() {
         <div className="flex gap-1 overflow-x-auto rounded-lg bg-zinc-100 p-1 text-sm">
           {TABS.map(([id, label]) => <button key={id} onClick={() => { S.admFilter = id; emit(); }} className={cn('shrink-0 rounded-md px-3 py-1.5', f === id ? 'bg-white font-medium shadow-xs' : 'text-zinc-600 hover:text-zinc-900')}>{label}</button>)}
         </div>
-        <select value={insF} onChange={e => { S.admInsurer = e.target.value; emit(); }} className="h-9 rounded-md border border-zinc-200 bg-white px-2 text-sm lg:ml-auto">
+        <select value={insF} onChange={e => { S.admInsurer = e.target.value; emit(); }} className="h-10 rounded-md border border-zinc-200 bg-white px-2 text-base sm:h-9 sm:text-sm lg:ml-auto">
           <option value="all">ყველა სადაზღვევო</option>{Object.keys(S_.meta).map(id => <option key={id} value={id}>{INSURERS[id].name}</option>)}
         </select>
       </div>

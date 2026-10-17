@@ -13,7 +13,7 @@ export default function AdminInsurerFormPage() {
   return <AdminShell active="adm-insurers"><Suspense><Form /></Suspense></AdminShell>;
 }
 
-const fieldCls = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-sm outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10';
+const fieldCls = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10';
 
 function Form() {
   const S_ = useDemo();
@@ -89,14 +89,14 @@ function Form() {
           <h2 className="font-semibold">კომპანია</h2>
           {input('name', 'დასახელება', { ph: 'მაგ. რიონი დაზღვევა' })}
           <label className="block"><span className="text-sm font-medium">აღწერა (შიდა გამოყენებისთვის)</span>
-            <textarea value={f.desc} onChange={e => set('desc', e.target.value)} rows={3} className="mt-1.5 w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-hidden focus:border-zinc-900" /></label>
+            <textarea value={f.desc} onChange={e => set('desc', e.target.value)} rows={3} className="mt-1.5 w-full rounded-lg border border-zinc-200 px-3 py-2 text-base sm:text-sm outline-hidden focus:border-zinc-900" /></label>
           {!id && input('firstUser', 'პირველი მომხმარებელი (username)', { ph: 'მაგ. rioni.nino', mono: true, hint: 'ერთჯერადი პაროლი შენახვისას შეიქმნება; პირველი შესვლისას შეცვლა სავალდებულოა.' })}
         </div>
         <div className={card('space-y-4 p-5')}>
           <h2 className="font-semibold">AI აგენტი</h2>
           {input('endpoint', 'AI აგენტის API მისამართი', { ph: 'https://agent.example.ge/dazgveva/v1/quote', mono: true })}
           <label className="block"><span className="text-sm font-medium">ავთენტიფიკაციის მეთოდი</span>
-            <select value={f.auth} onChange={e => { f.auth = e.target.value as AuthId; f.test = null; emit(); }} className="mt-1.5 h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm">
+            <select value={f.auth} onChange={e => { f.auth = e.target.value as AuthId; f.test = null; emit(); }} className="mt-1.5 h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-base sm:text-sm">
               {(Object.entries(AUTH) as [AuthId, string][]).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </select></label>
           {authFields[f.auth]}
