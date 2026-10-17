@@ -26,9 +26,9 @@ function OfferCell({ s, r, cat }: { s: Search; r: AgentReply; cat: CatId }) {
   if (!o) return <span className="text-xs text-zinc-400">—</span>;
   const win = s.results[cat]?.insurer === r.id;
   return (
-    <div className={cn(win && 'rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-300')}>
+    <div className={cn(win && 'rounded-md bg-brand-50 px-2 py-1 ring-1 ring-brand-300')}>
       <div className="font-semibold">{money(o.premium)}</div><div className="text-xs text-zinc-500">ფრანშიზა {money(o.deductible)}</div>
-      {win && <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700"><Icon name="sparkles" className="h-3 w-3" />AI არჩევანი</div>}
+      {win && <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-brand-800"><Icon name="sparkles" className="h-3 w-3" />AI არჩევანი</div>}
     </div>
   );
 }

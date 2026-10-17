@@ -36,7 +36,7 @@ export default function ContactPage() {
             <input id="phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="5XX XX XX XX" value={fmtPhone(S_.phone)}
               onChange={e => { S.phone = e.target.value.replace(/\D/g, '').replace(/^995/, '').slice(0, 9); emit(); }}
               onBlur={() => { S.phoneTouched = true; emit(); }}
-              className={cn('h-12 w-full rounded-r-lg border px-3 text-base tracking-wide sm:h-11 outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10', showErr ? 'border-rose-400' : 'border-zinc-200')} />
+              className={cn('h-12 w-full rounded-r-lg border px-3 text-base tracking-wide sm:h-11 outline-hidden focus:border-navy-700 focus:ring-2 focus:ring-brand-400/40', showErr ? 'border-rose-400' : 'border-zinc-200')} />
           </div>
           {showErr && <p className="mt-1.5 text-sm text-rose-600">შეიყვანეთ სწორი მობილურის ნომერი (5XX XX XX XX).</p>}
         </div>
@@ -49,16 +49,16 @@ export default function ContactPage() {
               return (
                 <div key={c.id} role="checkbox" aria-checked={on} tabIndex={0} onClick={() => toggle(c.id)}
                   onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(c.id); } }}
-                  className={cn('cursor-pointer select-none rounded-lg border p-3 transition', on ? 'border-zinc-900 ring-1 ring-zinc-900' : 'border-zinc-200 hover:border-zinc-400')}>
+                  className={cn('cursor-pointer select-none rounded-lg border p-3 transition', on ? 'border-navy-900 ring-1 ring-navy-900' : 'border-zinc-200 hover:border-zinc-400')}>
                   <div className="flex items-center gap-2.5">
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md" style={{ background: `${c.color}14`, color: c.color }}><Icon name={c.icon} className="h-4 w-4" /></span>
                     <span className="min-w-0 text-[15px] font-medium leading-tight sm:text-sm">{c.label}</span>
-                    <span className={cn('ml-auto grid h-5 w-5 shrink-0 place-items-center rounded-sm border sm:h-4 sm:w-4', on ? 'border-zinc-900 bg-zinc-900 text-white' : 'border-zinc-300')}>{on && <Icon name="check" className="h-3 w-3" />}</span>
+                    <span className={cn('ml-auto grid h-5 w-5 shrink-0 place-items-center rounded-sm border sm:h-4 sm:w-4', on ? 'border-navy-900 bg-navy-900 text-white' : 'border-zinc-300')}>{on && <Icon name="check" className="h-3 w-3" />}</span>
                   </div>
                   {on && many && (
                     <button type="button" role="radio" aria-checked={pref} onClick={e => { e.stopPropagation(); S.preferred = c.id; emit(); }}
                       className={cn('mt-2 flex w-full items-center gap-2 rounded-md px-1 py-2 text-xs sm:py-1', pref ? 'font-semibold text-zinc-900' : 'text-zinc-500 hover:text-zinc-900')}>
-                      <span className={cn('grid h-3.5 w-3.5 place-items-center rounded-full border', pref ? 'border-zinc-900' : 'border-zinc-400')}>{pref && <span className="h-1.5 w-1.5 rounded-full bg-zinc-900" />}</span>
+                      <span className={cn('grid h-3.5 w-3.5 place-items-center rounded-full border', pref ? 'border-navy-900' : 'border-zinc-400')}>{pref && <span className="h-1.5 w-1.5 rounded-full bg-navy-900" />}</span>
                       უპირატესი{pref && <Icon name="star" className="ml-auto h-3.5 w-3.5 text-amber-400" />}
                     </button>
                   )}
@@ -72,7 +72,7 @@ export default function ContactPage() {
         <p className="flex items-start gap-2 rounded-lg bg-zinc-50 p-3 text-sm text-zinc-600"><Icon name="lock" className="mt-0.5 h-4 w-4 shrink-0" />თქვენი პირადი მონაცემები სადაზღვევო კომპანიას მხოლოდ მაშინ გადაეცემა, როცა თქვენ მის შეთავაზებას აირჩევთ.</p>
       </div>
       <StepActions back={() => go('value')}>
-        <button disabled={!(phoneValid() && S_.channels.length)} onClick={() => go('auction')} className={btn('primary', 'lg')}>შეთავაზებების მოძიება<Icon name="arrow-right" className="h-4 w-4" /></button>
+        <button disabled={!(phoneValid() && S_.channels.length)} onClick={() => go('auction')} className={btn('accent', 'lg')}>შეთავაზებების მოძიება<Icon name="arrow-right" className="h-4 w-4" /></button>
       </StepActions>
     </section>
   );

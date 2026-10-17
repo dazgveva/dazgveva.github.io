@@ -44,8 +44,8 @@ export function Navigator() {
               <ul className="space-y-2">
                 {SCENARIOS.map(([id, t, d]) => (
                   <li key={id}>
-                    <button onClick={() => runScenario(id)} className="w-full rounded-lg border border-zinc-200 p-3 text-left transition hover:border-zinc-900">
-                      <div className="flex items-center gap-2"><span className={badge('bg-zinc-900 text-zinc-50')}>{id}</span><span className="text-sm font-semibold">{t}</span><Icon name="arrow-right" className="ml-auto h-4 w-4 text-zinc-400" /></div>
+                    <button onClick={() => runScenario(id)} className="w-full rounded-lg border border-zinc-200 p-3 text-left transition hover:border-navy-700">
+                      <div className="flex items-center gap-2"><span className={badge('bg-navy-900 text-zinc-50')}>{id}</span><span className="text-sm font-semibold">{t}</span><Icon name="arrow-right" className="ml-auto h-4 w-4 text-zinc-400" /></div>
                       <p className="mt-1 text-xs text-zinc-500">{d}</p>
                     </button>
                   </li>
@@ -59,9 +59,9 @@ export function Navigator() {
                   <div className="mt-2 grid gap-1.5">
                     {MODES.map(m => (
                       <button key={m.id} onClick={() => { S.mode = m.id; emit(); toast(`აუქციონის რეჟიმი: ${m.label}`); }}
-                        className={cn('flex items-center gap-2 rounded-md border px-3 py-2 text-left text-sm', S_.mode === m.id ? 'border-zinc-900 bg-white font-medium' : 'border-zinc-200 bg-white/60')}>
-                        <span className={cn('grid h-3.5 w-3.5 place-items-center rounded-full border', S_.mode === m.id ? 'border-zinc-900' : 'border-zinc-400')}>
-                          {S_.mode === m.id && <span className="h-1.5 w-1.5 rounded-full bg-zinc-900" />}
+                        className={cn('flex items-center gap-2 rounded-md border px-3 py-2 text-left text-sm', S_.mode === m.id ? 'border-navy-900 bg-white font-medium' : 'border-zinc-200 bg-white/60')}>
+                        <span className={cn('grid h-3.5 w-3.5 place-items-center rounded-full border', S_.mode === m.id ? 'border-navy-900' : 'border-zinc-400')}>
+                          {S_.mode === m.id && <span className="h-1.5 w-1.5 rounded-full bg-navy-900" />}
                         </span>{m.label}
                       </button>
                     ))}
@@ -70,7 +70,7 @@ export function Navigator() {
                 <div className="flex items-center justify-between gap-3">
                   <div><div className="text-sm font-medium">წაუკითხავი სკანი</div><div className="text-xs text-zinc-500">OCR შეცდომას დააბრუნებს</div></div>
                   <button role="switch" aria-checked={S_.failScan} onClick={() => { S.failScan = !S.failScan; emit(); }}
-                    className={cn('relative h-6 w-11 shrink-0 rounded-full transition', S_.failScan ? 'bg-zinc-900' : 'bg-zinc-300')}>
+                    className={cn('relative h-6 w-11 shrink-0 rounded-full transition', S_.failScan ? 'bg-navy-900' : 'bg-zinc-300')}>
                     <span className={cn('absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all', S_.failScan ? 'left-[22px]' : 'left-0.5')} />
                   </button>
                 </div>

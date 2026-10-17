@@ -41,7 +41,7 @@ export function Header() {
     <>
       <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4">
-          <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold text-[#263A5C]">
+          <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold text-navy-900">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.svg" alt="" className="h-8 w-auto shrink-0" />
             <span className="truncate">dazgveva.ge</span>

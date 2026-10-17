@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // Browser extensions add attributes to <html> before React loads (e.g. data-mbtss-nonce); this
     // silences only those attribute mismatches on this one element, not errors in the app below it.
     <html lang="ka" className={`${inter.variable} ${georgian.variable}`} suppressHydrationWarning>
-      <body className={`min-h-dvh bg-white font-sans text-zinc-950 antialiased ${INTERACTIVE}`}>
+      <body className={`min-h-dvh bg-white font-sans text-zinc-950 antialiased selection:bg-brand-200 selection:text-navy-950 ${INTERACTIVE}`}>
         <Boot />
         <Header />
         <main className="pb-24"><Gate>{children}</Gate></main>

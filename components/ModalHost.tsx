@@ -157,7 +157,7 @@ function Otp({ m }: { m: Extract<Modal, { type: 'otp' }> }) {
 function AddUser({ ins }: { ins?: string }) {
   const [name, setName] = useState(''), [role, setRole] = useState<User['role']>('partner'), [insurer, setInsurer] = useState(ins || activeInsurers()[0]);
   const [err, setErr] = useState('');
-  const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-base sm:text-sm outline-hidden focus:border-zinc-900';
+  const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-base sm:text-sm outline-hidden focus:border-navy-700';
   return (
     <Dialog>
       <h2 className="text-lg font-semibold">მომხმარებლის დამატება</h2>

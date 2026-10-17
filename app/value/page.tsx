@@ -60,8 +60,8 @@ export default function ValuePage() {
   const setMode = (m: 'ai' | 'own') => { S.valueMode = m; if (m === 'ai') S.value = S.aiValue; emit(); };
   const option = (id: 'ai' | 'own', title: string, right: ReactNode) => (
     <button type="button" role="radio" aria-checked={S_.valueMode === id} onClick={() => setMode(id)}
-      className={cn('flex w-full items-center gap-3 rounded-xl border p-4 text-left transition', S_.valueMode === id ? 'border-zinc-900 ring-1 ring-zinc-900' : 'border-zinc-200 hover:border-zinc-400')}>
-      <span className={cn('grid h-4 w-4 shrink-0 place-items-center rounded-full border', S_.valueMode === id ? 'border-zinc-900' : 'border-zinc-400')}>{S_.valueMode === id && <span className="h-2 w-2 rounded-full bg-zinc-900" />}</span>
+      className={cn('flex w-full items-center gap-3 rounded-xl border p-4 text-left transition', S_.valueMode === id ? 'border-navy-900 ring-1 ring-navy-900' : 'border-zinc-200 hover:border-zinc-400')}>
+      <span className={cn('grid h-4 w-4 shrink-0 place-items-center rounded-full border', S_.valueMode === id ? 'border-navy-900' : 'border-zinc-400')}>{S_.valueMode === id && <span className="h-2 w-2 rounded-full bg-navy-900" />}</span>
       <span className="flex-1 text-sm font-medium">{title}</span>{right}
     </button>
   );
@@ -75,7 +75,7 @@ export default function ValuePage() {
       {car}
       <div className={card('mt-6 p-5')}>
         <div className="flex items-center gap-1.5 text-sm text-zinc-500"><Icon name="sparkles" className="h-4 w-4" />AI-ის შეფასება</div>
-        <div className="mt-1 text-4xl font-bold tracking-tight text-[#263A5C]">{money(S_.aiValue)}</div>
+        <div className="mt-1 text-4xl font-bold tracking-tight text-navy-900">{money(S_.aiValue)}</div>
         <p className="mt-1 text-sm text-zinc-500">მსგავსი განცხადებების საშუალო (მედიანა). ფასების უმეტესობა: {money(MARKET_STATS.p25)} – {money(MARKET_STATS.p75)}.</p>
         <ValueChart />
       </div>
@@ -86,7 +86,7 @@ export default function ValuePage() {
         {own && <OwnValue />}
       </div>
       <StepActions back={() => go('home')}>
-        <button disabled={!ok} onClick={() => { if (S.valueMode === 'ai') S.value = S.aiValue; if (valueOk(S.value)) go('contact'); }} className={btn('primary', 'lg')}>
+        <button disabled={!ok} onClick={() => { if (S.valueMode === 'ai') S.value = S.aiValue; if (valueOk(S.value)) go('contact'); }} className={btn('accent', 'lg')}>
           გაგრძელება<Icon name="arrow-right" className="h-4 w-4" />
         </button>
       </StepActions>
@@ -108,13 +108,13 @@ function OwnValue() {
         <div className="flex">
           <input id="val-input" autoFocus type="number" inputMode="numeric" min={valueMin()} max={valueMax()} step={VALUE_STEP} value={raw}
             onChange={e => { setRaw(e.target.value); set(Math.round(+e.target.value)); }}
-            className={cn('h-11 w-36 rounded-l-lg border bg-white px-3 text-lg font-semibold outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10', ok ? 'border-zinc-200' : 'border-rose-400')} />
+            className={cn('h-11 w-36 rounded-l-lg border bg-white px-3 text-lg font-semibold outline-hidden focus:border-navy-700 focus:ring-2 focus:ring-brand-400/40', ok ? 'border-zinc-200' : 'border-rose-400')} />
           <span className="inline-flex items-center rounded-r-lg border border-l-0 border-zinc-200 bg-white px-3 text-zinc-500">₾</span>
         </div>
         <span className="text-sm text-zinc-500">{!ok ? '' : pct === 0 ? 'ემთხვევა AI-ის შეფასებას' : `სხვაობა AI-ის შეფასებასთან: ${pct > 0 ? '+' : ''}${pct}%`}</span>
       </div>
       <input type="range" min={valueMin()} max={valueMax()} step={VALUE_STEP} value={ok ? v! : S_.aiValue!} aria-label="ღირებულების შერჩევა"
-        onChange={e => { setRaw(e.target.value); set(+e.target.value); }} className="mt-4 h-8 w-full accent-[#263A5C] sm:h-auto" />
+        onChange={e => { setRaw(e.target.value); set(+e.target.value); }} className="mt-4 h-8 w-full accent-brand-600 sm:h-auto" />
       <div className="flex justify-between text-[11px] text-zinc-400"><span>{money(valueMin())}</span><span>{money(valueMax())}</span></div>
       {!ok && <p className="mt-2 text-sm text-rose-600">ღირებულება უნდა იყოს {money(valueMin())} – {money(valueMax())} ფარგლებში.</p>}
       {ok && Math.abs(pct) > 15 && (
@@ -141,17 +141,17 @@ function ValueChart() {
         <div className="flex h-full items-end gap-[2px]">
           {bins.map(b => (
             <div key={b.from} tabIndex={0} className="group relative h-full flex-1 outline-hidden" aria-label={`${num(b.from)}–${num(b.to)} ₾: ${b.n} განცხადება`}>
-              <div className="absolute inset-x-0 bottom-0 rounded-t-sm bg-sky-200 transition group-hover:bg-sky-400 group-focus:bg-sky-400" style={{ height: `${b.n ? Math.max(4, b.n / top * 100) : 0}%` }} />
-              <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-900 px-2 py-1 text-[11px] text-white shadow-sm group-hover:block group-focus:block">{num(b.from)}–{num(b.to)} ₾ · {b.n} განცხ.</div>
+              <div className="absolute inset-x-0 bottom-0 rounded-t-sm bg-navy-200 transition group-hover:bg-navy-400 group-focus:bg-navy-400" style={{ height: `${b.n ? Math.max(4, b.n / top * 100) : 0}%` }} />
+              <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-navy-950 px-2 py-1 text-[11px] text-white shadow-sm group-hover:block group-focus:block">{num(b.from)}–{num(b.to)} ₾ · {b.n} განცხ.</div>
             </div>
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-y-0 border-l-2 border-dashed border-[#263A5C]" style={{ left: `${pos(S_.aiValue!)}%` }}>
-          <span className="absolute -top-7 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#263A5C] px-1.5 py-0.5 text-[11px] font-medium text-white">AI: {money(S_.aiValue!)}</span>
+        <div className="pointer-events-none absolute inset-y-0 border-l-2 border-dashed border-navy-900" style={{ left: `${pos(S_.aiValue!)}%` }}>
+          <span className="absolute -top-7 -translate-x-1/2 whitespace-nowrap rounded-md bg-navy-900 px-1.5 py-0.5 text-[11px] font-medium text-white">AI: {money(S_.aiValue!)}</span>
         </div>
         {showOwn && (
-          <div className="pointer-events-none absolute inset-y-0 border-l-2 border-sky-600" style={{ left: `${ownPos}%` }}>
-            <span className={cn('absolute top-1 whitespace-nowrap rounded-md bg-sky-600 px-1.5 py-0.5 text-[11px] font-medium text-white', ownPos > 70 ? 'right-1' : 'left-1')}>შენი: {money(S_.value!)}</span>
+          <div className="pointer-events-none absolute inset-y-0 border-l-2 border-brand-600" style={{ left: `${ownPos}%` }}>
+            <span className={cn('absolute top-1 whitespace-nowrap rounded-md bg-brand-600 px-1.5 py-0.5 text-[11px] font-semibold text-white', ownPos > 70 ? 'right-1' : 'left-1')}>შენი: {money(S_.value!)}</span>
           </div>
         )}
       </div>

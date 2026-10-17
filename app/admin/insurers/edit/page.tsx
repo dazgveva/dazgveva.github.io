@@ -13,7 +13,7 @@ export default function AdminInsurerFormPage() {
   return <AdminShell active="adm-insurers"><Suspense><Form /></Suspense></AdminShell>;
 }
 
-const fieldCls = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10';
+const fieldCls = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-navy-700 focus:ring-2 focus:ring-brand-400/40';
 
 function Form() {
   const S_ = useDemo();
@@ -38,7 +38,7 @@ function Form() {
   const secret = (key: string, label: string) => (
     <div><span className="text-sm font-medium">{label}</span>
       <div className="mt-1.5 flex gap-2">
-        <input value={f.creds[key] || ''} onChange={e => set(`creds.${key}`, e.target.value)} spellCheck={false} className="h-10 w-full rounded-lg border border-zinc-200 px-3 font-mono text-[13px] outline-hidden focus:border-zinc-900" />
+        <input value={f.creds[key] || ''} onChange={e => set(`creds.${key}`, e.target.value)} spellCheck={false} className="h-10 w-full rounded-lg border border-zinc-200 px-3 font-mono text-[13px] outline-hidden focus:border-navy-700" />
         <button onClick={() => set(`creds.${key}`, 'dzg_' + rnd(32, '0123456789abcdef'))} className={btn('outline', 'md', 'shrink-0')}><Icon name="refresh-cw" className="h-3.5 w-3.5" />გენერირება</button>
       </div>
     </div>
@@ -48,7 +48,7 @@ function Form() {
       <div className="rounded-lg bg-zinc-50 p-3 text-xs text-zinc-600">ორმხრივი TLS: ჩვენ წარვადგენთ dazgveva.ge-ს კლიენტის სერტიფიკატს, თქვენ — სერვერის სერტიფიკატს.</div>
       <label className="block"><span className="text-sm font-medium">სადაზღვევოს CA სერტიფიკატი (.pem)</span>
         <input type="file" accept=".pem,.crt,.cer" onChange={e => { if (e.target.files?.[0]) set('creds.caName', e.target.files[0].name); }}
-          className="mt-1.5 block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-zinc-900 file:px-3 file:py-2 file:text-sm file:text-white" />
+          className="mt-1.5 block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-navy-900 file:px-3 file:py-2 file:text-sm file:text-white" />
         {f.creds.caName && <span className="mt-1 flex items-center gap-1 text-xs text-emerald-700"><Icon name="file-check" className="h-3.5 w-3.5" />{f.creds.caName}</span>}
       </label>
       <div className="flex items-center justify-between rounded-lg border border-zinc-200 p-3 text-sm"><span>dazgveva.ge-ს კლიენტის სერტიფიკატი</span>
@@ -89,7 +89,7 @@ function Form() {
           <h2 className="font-semibold">კომპანია</h2>
           {input('name', 'დასახელება', { ph: 'მაგ. რიონი დაზღვევა' })}
           <label className="block"><span className="text-sm font-medium">აღწერა (შიდა გამოყენებისთვის)</span>
-            <textarea value={f.desc} onChange={e => set('desc', e.target.value)} rows={3} className="mt-1.5 w-full rounded-lg border border-zinc-200 px-3 py-2 text-base sm:text-sm outline-hidden focus:border-zinc-900" /></label>
+            <textarea value={f.desc} onChange={e => set('desc', e.target.value)} rows={3} className="mt-1.5 w-full rounded-lg border border-zinc-200 px-3 py-2 text-base sm:text-sm outline-hidden focus:border-navy-700" /></label>
           {!id && input('firstUser', 'პირველი მომხმარებელი (username)', { ph: 'მაგ. rioni.nino', mono: true, hint: 'ერთჯერადი პაროლი შენახვისას შეიქმნება; პირველი შესვლისას შეცვლა სავალდებულოა.' })}
         </div>
         <div className={card('space-y-4 p-5')}>

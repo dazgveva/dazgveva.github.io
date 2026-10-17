@@ -5,9 +5,9 @@ import { Icon } from '@/components/Icon';
 import { INSURERS, S, SIDE_NAME, acceptFiles, activeInsurers, catById, emit, go, nextSide, setSide, toast } from '@/lib/demo';
 import type { CatId, Side } from '@/lib/types';
 import { useDemo } from '@/lib/useDemo';
-import { HOME_BTN_DARK, HOME_BTN_SOFT, cn } from '@/lib/ui';
+import { HOME_BTN_ACCENT, HOME_BTN_SOFT, cn } from '@/lib/ui';
 
-const h2 = 'text-center text-xl font-bold uppercase tracking-wide text-[#263A5C] sm:text-2xl';
+const h2 = 'text-center text-xl font-bold uppercase tracking-wide text-navy-900 sm:text-2xl';
 const row = 'flex items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 hover:shadow-xs';
 const chip = 'inline-flex items-center gap-1 text-xs text-zinc-500';
 const PACKAGES: [CatId, string, [string, string][]][] = [
@@ -53,17 +53,17 @@ export default function HomePage() {
       <input ref={back} type="file" accept={ACCEPT} hidden onChange={e => { if (e.target.files?.length) acceptFiles(e.target.files, 'back'); e.target.value = ''; }} />
 
       <section id="top" className="relative scroll-mt-24 overflow-hidden lg:flex lg:min-h-[calc(100svh-3.5rem-1px)] lg:items-center">
-        <div className="pointer-events-none absolute left-1/2 top-24 h-72 w-[42rem] max-w-[120%] -translate-x-1/2 rounded-full bg-linear-to-b from-sky-100 to-transparent opacity-60 blur-3xl" />
+        <div className="pointer-events-none absolute left-1/2 top-24 h-72 w-[42rem] max-w-[120%] -translate-x-1/2 rounded-full bg-linear-to-b from-brand-100 via-navy-50 to-transparent opacity-70 blur-3xl" />
         <div className="relative mx-auto w-full max-w-3xl px-4 pb-16 pt-14 text-center sm:pt-20 lg:py-12">
           <div className="flex items-center justify-center gap-3 sm:gap-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.svg" alt="" className="h-20 w-auto sm:h-28" />
-            <span className="text-5xl font-bold tracking-tight text-[#263A5C] sm:text-7xl">dazgveva</span>
+            <span className="text-5xl font-bold tracking-tight text-navy-900 sm:text-7xl">dazgveva</span>
           </div>
           <h1 className="mx-auto mt-6 max-w-xl text-sm font-medium uppercase tracking-wider text-zinc-600 sm:text-base">აპოვნინე ხელოვნურ ინტელექტს შენთვის შესაფერისი სადაზღვევო პაკეტი</h1>
 
           <div className="relative mt-8">
-            <div className="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-linear-to-r from-sky-300 via-indigo-300 to-sky-300 opacity-50 blur-2xl" />
+            <div className="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-linear-to-r from-brand-300 via-navy-200 to-brand-300 opacity-50 blur-2xl" />
             <UploadZone pick={pick} scan={scan} />
           </div>
 
@@ -86,7 +86,7 @@ export default function HomePage() {
             </>
           )}
 
-          <div className="mt-8 inline-flex items-start gap-2 rounded-2xl bg-emerald-50 px-4 py-2.5 text-left text-sm font-semibold text-emerald-800 ring-1 ring-inset ring-emerald-200 sm:items-center sm:rounded-full">
+          <div className="mt-8 inline-flex items-start gap-2 rounded-2xl bg-brand-50 px-4 py-2.5 text-left text-sm font-semibold text-brand-800 ring-1 ring-inset ring-brand-200 sm:items-center sm:rounded-full">
             <Icon name="badge-check" className="h-5 w-5 shrink-0" />ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას.
           </div>
           <p className="mt-4 text-[11px] text-zinc-400">ეს საიტი დაცულია reCAPTCHA-ით და მოქმედებს Google-ის <a href="#" onClick={e => e.preventDefault()} className="underline">კონფიდენციალურობის პოლიტიკა</a> და <a href="#" onClick={e => e.preventDefault()} className="underline">მომსახურების პირობები</a>.</p>
@@ -98,7 +98,7 @@ export default function HomePage() {
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {HOW.map(([ic, t, d], i) => (
             <div key={t} className="rounded-2xl border border-zinc-200 bg-white p-5 text-left">
-              <div className="flex items-center justify-between"><span className="grid h-10 w-10 place-items-center rounded-full bg-sky-50 text-sky-700"><Icon name={ic} className="h-5 w-5" /></span><span className="text-3xl font-bold text-zinc-100">{i + 1}</span></div>
+              <div className="flex items-center justify-between"><span className="grid h-10 w-10 place-items-center rounded-full bg-brand-100 text-navy-900"><Icon name={ic} className="h-5 w-5" /></span><span className="text-3xl font-bold text-zinc-100">{i + 1}</span></div>
               <h3 className="mt-4 font-semibold">{t}</h3><p className="mt-1 text-sm text-zinc-500">{d}</p>
             </div>
           ))}
@@ -162,7 +162,7 @@ function UploadZone({ pick, scan }: { pick: (side?: Side) => void; scan: () => v
   if (!target) return (
     <div className="relative flex flex-col gap-2 rounded-3xl border border-zinc-200 bg-white p-2 shadow-xs sm:flex-row sm:items-center sm:rounded-full sm:pl-6">
       <div className="flex flex-1 items-center gap-3 px-3 py-2 text-left sm:px-0"><Icon name="circle-check" className="h-5 w-5 shrink-0 text-emerald-600" /><span className="text-sm font-medium sm:text-base">ორივე მხარე ატვირთულია</span></div>
-      <button onClick={scan} disabled={S_.processing} className={HOME_BTN_DARK}>
+      <button onClick={scan} disabled={S_.processing} className={HOME_BTN_ACCENT}>
         {S_.processing ? <><Icon name="loader-circle" className="h-4 w-4 animate-spin" />ტექპასპორტი მუშავდება…</> : <><Icon name="sparkles" className="h-4 w-4" />AI ძიების დაწყება</>}
       </button>
     </div>
@@ -172,8 +172,8 @@ function UploadZone({ pick, scan }: { pick: (side?: Side) => void; scan: () => v
       onDragOver={e => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)}
       onDrop={e => { e.preventDefault(); setDrag(false); acceptFiles(e.dataTransfer.files); }}
       className={cn('relative flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed px-6 py-8 transition',
-        S_.uploadError ? 'border-rose-300 bg-rose-50/40' : 'border-zinc-300 bg-white/80 hover:border-sky-300 hover:bg-sky-50/40', drag && 'ring-2 ring-sky-300')}>
-      <span className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-800">{target === 'front' ? 1 : 2} / 2 · ტექპასპორტის {SIDE_NAME[target]}</span>
+        S_.uploadError ? 'border-rose-300 bg-rose-50/40' : 'border-zinc-300 bg-white/80 hover:border-brand-500 hover:bg-brand-50/50', drag && 'border-brand-500 bg-brand-50/60 ring-2 ring-brand-300')}>
+      <span className="inline-flex items-center gap-2 rounded-full bg-navy-50 px-3 py-1 text-xs font-semibold text-navy-800">{target === 'front' ? 1 : 2} / 2 · ტექპასპორტის {SIDE_NAME[target]}</span>
       <span className="grid h-14 w-20 place-items-center rounded-xl border-2 border-zinc-300 text-zinc-400"><Icon name={target === 'front' ? 'credit-card' : 'scan-line'} className="h-7 w-7" /></span>
       <p className="hidden text-base font-medium text-zinc-800 sm:block">ჩააგდე ფოტო აქ</p>
       <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ function Thumb({ side, pick }: { side: Side; pick: (side?: Side) => void }) {
   const S_ = useDemo();
   const f = S_[side], isNext = nextSide() === side;
   if (!f) return (
-    <div className={cn('flex aspect-[1.586] flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed text-xs', isNext ? 'border-sky-300 bg-sky-50/50 text-sky-800' : 'border-zinc-200 text-zinc-400')}>
+    <div className={cn('flex aspect-[1.586] flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed text-xs', isNext ? 'border-brand-400 bg-brand-50/60 text-navy-800' : 'border-zinc-200 text-zinc-400')}>
       <Icon name={side === 'front' ? 'credit-card' : 'scan-line'} className="h-5 w-5" /><span className="font-medium">{SIDE_NAME[side]}</span>{isNext && <span className="text-zinc-500">ახლა ეს მხარე</span>}
     </div>
   );

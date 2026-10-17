@@ -5,7 +5,7 @@ import { DEMO_PASSWORD, S, emit, isActive, submitLogin } from '@/lib/demo';
 import { useDemo } from '@/lib/useDemo';
 import { btn, card } from '@/lib/ui';
 
-const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10';
+const field = 'mt-1.5 h-10 w-full rounded-lg border border-zinc-200 px-3 text-base sm:text-sm outline-hidden focus:border-navy-700 focus:ring-2 focus:ring-brand-400/40';
 
 /** Staff sign-in. Not linked from the public site: staff open /login directly. */
 export default function LoginPage() {
@@ -36,7 +36,7 @@ export default function LoginPage() {
           {demo.map(u => (
             <li key={u.username}>
               <button onClick={() => { S.login = { u: u.username, p: DEMO_PASSWORD, error: null, hint: null }; emit(); }}
-                className="flex w-full items-center gap-2 rounded-md border border-zinc-200 px-2.5 py-2 text-left text-sm hover:border-zinc-900">
+                className="flex w-full items-center gap-2 rounded-md border border-zinc-200 px-2.5 py-2 text-left text-sm hover:border-navy-700">
                 <InsAvatar id={u.insurer!} size="h-5 w-5" /><span className="font-mono text-xs">{u.username}</span>
               </button>
             </li>

@@ -54,7 +54,7 @@ export default function AuctionPage() {
       <h1 className="text-2xl font-bold tracking-tight">{done ? 'აუქციონი დასრულდა' : 'მიმდინარეობს აუქციონი'}</h1>
       <p className="mt-2 text-zinc-600">ჩვენი AI აგენტი სადაზღვევო კომპანიებს ეკითხება. ეს რამდენიმე წამს გაგრძელდება.</p>
       <div className="mt-6 h-2 overflow-hidden rounded-full bg-zinc-100">
-        <div className="h-full rounded-full bg-zinc-900" style={{ width: started ? '100%' : '0%', transition: `width ${total}s linear` }} />
+        <div className="h-full rounded-full bg-linear-to-r from-navy-900 to-brand-500" style={{ width: started ? '100%' : '0%', transition: `width ${total}s linear` }} />
       </div>
       {/* Phones: one compact row per insurer (full names, status on the right); tiles from sm up. */}
       <div className="mt-5 divide-y divide-zinc-100 rounded-lg border border-zinc-200 sm:grid sm:grid-cols-3 sm:gap-2 sm:divide-y-0 sm:rounded-none sm:border-0">

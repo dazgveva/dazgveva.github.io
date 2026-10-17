@@ -19,8 +19,8 @@ export function Stepper({ active }: { active: number }) {
           <Fragment key={s}>
             <li className={cn('flex items-center gap-1.5', cur ? 'font-semibold text-zinc-900' : 'text-zinc-500')}>
               {done
-                ? <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-zinc-900 text-white"><Icon name="check" className="h-3.5 w-3.5" /></span>
-                : <span className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-semibold', cur ? 'bg-zinc-900 text-white' : 'border border-zinc-300 text-zinc-500')}>{i + 1}</span>}
+                ? <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-navy-900 text-white"><Icon name="check" className="h-3.5 w-3.5" /></span>
+                : <span className={cn('grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-semibold', cur ? 'bg-navy-900 text-white' : 'border border-zinc-300 text-zinc-500')}>{i + 1}</span>}
               <span className={cur ? '' : 'hidden md:inline'}>{s}</span>
             </li>
             {i < steps.length - 1 && <li className="h-px w-3 bg-zinc-300 sm:w-5" />}
@@ -121,7 +121,7 @@ export function PartnerShell({ active, children }: { active: 'ins-list' | 'ins-a
           {items.map(([id, href, ic, label, count]) => (
             <Link key={id} href={href} aria-current={active === id ? 'page' : undefined} className={navBtn(active === id)}>
               <Icon name={ic} className="h-4 w-4" />{label}
-              {!!count && <span className={cn('ml-auto rounded-full px-1.5 text-[11px]', active === id ? 'bg-white/20' : 'bg-sky-100 text-sky-700')}>{count}</span>}
+              {!!count && <span className={cn('ml-auto rounded-full px-1.5 text-[11px]', active === id ? 'bg-white/20' : 'bg-brand-200 text-navy-900')}>{count}</span>}
             </Link>
           ))}
           <button onClick={logout} className={btn('ghost', 'sm', 'shrink-0 justify-start text-zinc-500 md:mt-4 md:w-full')}><Icon name="log-out" className="h-4 w-4" />გასვლა</button>
