@@ -1,25 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="560 510 812 906" width="812" height="906">
-  <g fill="none" stroke="#263A5C" stroke-width="26" stroke-linecap="butt" stroke-linejoin="round">
-    <!-- Shield top + right hand upper edge -->
-    <path d="M633 965 C618 890 608 820 610 760 C611 720 613 695 617 667
-             C750 658 870 620 966 557 C1062 620 1182 658 1315 667
-             C1320 720 1325 790 1318 853 H1165
-             C1135 853 1115 843 1085 826 C1055 809 1035 795 1012 795
-             C985 795 962 810 945 827 L872 903
-             C865 910 866 915 872 920 C890 935 925 940 955 915
-             C975 898 985 885 995 880 C1000 877 1003 878 1008 883
-             L1110 985 C1120 995 1125 1008 1137 1008 H1248"/>
-    <!-- Left sleeve upper edge + left hand top -->
-    <path d="M655 853 H773 C810 853 860 818 888 808 C910 800 932 805 950 815"/>
-    <!-- Shield bottom + left sleeve lower edge + palm -->
-    <path d="M1311 903 C1290 1040 1250 1150 1180 1240 C1110 1320 1030 1365 966 1378
-             C900 1365 820 1320 750 1240 C690 1170 660 1090 640 1008 H768
-             C795 1008 810 1018 825 1033 L900 1105 C920 1125 945 1128 962 1112"/>
-    <!-- Fingertips -->
-    <path d="M962 1112 C980 1128 1015 1128 1025 1100 C1045 1100 1068 1090 1075 1068
-             C1100 1065 1130 1045 1137 1008"/>
-    <!-- Fingers -->
-    <g stroke-linecap="round">
+  <!-- dazgveva.ge: an emerald shield (protection) around a midnight-navy handshake (the deal).
+       Brand colours: emerald #059F64 (brand-500) and navy #0E2745 (navy-900). -->
+  <defs>
+    <!-- A slight top-to-bottom emerald gradient gives the shield some depth and keeps its lower curve readable at small sizes. -->
+    <linearGradient id="shield" x1="0" y1="557" x2="0" y2="1378" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#14B375"/>
+      <stop offset="0.5" stop-color="#059F64"/>
+      <stop offset="1" stop-color="#027D4D"/>
+    </linearGradient>
+    <!-- Soft mint body: the shield reads as a shape even at favicon size, and the navy handshake
+         stays visible on any background (including navy). -->
+    <linearGradient id="body" x1="0" y1="557" x2="0" y2="1378" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F3FEF7"/>
+      <stop offset="1" stop-color="#C9F5DB"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield body: the outline below, closed across the two gaps where the sleeves pass through -->
+  <path fill="url(#body)" d="M633 965 C618 890 608 820 610 760 C611 720 613 695 617 667
+           C750 658 870 620 966 557 C1062 620 1182 658 1315 667
+           C1320 720 1325 790 1318 853 L1311 903
+           C1290 1040 1250 1150 1180 1240 C1110 1320 1030 1365 966 1378
+           C900 1365 820 1320 750 1240 C690 1170 660 1090 640 1008 Z"/>
+  <g fill="none" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Shield: top arc, and the bottom curve down to the point -->
+    <g stroke="url(#shield)" stroke-width="30">
+      <path d="M633 965 C618 890 608 820 610 760 C611 720 613 695 617 667
+               C750 658 870 620 966 557 C1062 620 1182 658 1315 667
+               C1320 720 1325 790 1318 853"/>
+      <path d="M1311 903 C1290 1040 1250 1150 1180 1240 C1110 1320 1030 1365 966 1378
+               C900 1365 820 1320 750 1240 C690 1170 660 1090 640 1008"/>
+    </g>
+    <!-- Handshake, drawn over the shield so the sleeves cross its line -->
+    <g stroke="#0E2745">
+      <!-- Right hand: sleeve, back of the hand, thumb -->
+      <path d="M1318 853 H1165
+               C1135 853 1115 843 1085 826 C1055 809 1035 795 1012 795
+               C985 795 962 810 945 827 L872 903
+               C865 910 866 915 872 920 C890 935 925 940 955 915
+               C975 898 985 885 995 880 C1000 877 1003 878 1008 883
+               L1110 985 C1120 995 1125 1008 1137 1008 H1248"/>
+      <!-- Left sleeve upper edge + left hand top -->
+      <path d="M655 853 H773 C810 853 860 818 888 808 C910 800 932 805 950 815"/>
+      <!-- Left sleeve lower edge + palm -->
+      <path d="M640 1008 H768 C795 1008 810 1018 825 1033 L900 1105 C920 1125 945 1128 962 1112"/>
+      <!-- Fingertips -->
+      <path d="M962 1112 C980 1128 1015 1128 1025 1100 C1045 1100 1068 1090 1075 1068
+               C1100 1065 1130 1045 1137 1008"/>
+      <!-- Fingers -->
       <path d="M918 1058 L970 1108"/>
       <path d="M962 1015 L1030 1082"/>
       <path d="M1003 975 L1075 1045"/>
