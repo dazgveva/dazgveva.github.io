@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import {
   ArchiveBoxArrowDownIcon, ArchiveBoxIcon, ArrowDownOnSquareIcon, ArrowDownTrayIcon, ArrowLeftIcon, ArrowPathIcon,
   ArrowRightEndOnRectangleIcon, ArrowRightIcon, ArrowRightStartOnRectangleIcon, ArrowsRightLeftIcon, ArrowTrendingDownIcon,
-  ArrowUpRightIcon, ArrowUpTrayIcon, ArrowUturnLeftIcon, Battery100Icon, BellIcon, BoltIcon, BuildingOffice2Icon,
+  ArrowUpRightIcon, ArrowUpTrayIcon, Bars3Icon, ArrowUturnLeftIcon, Battery100Icon, BellIcon, BoltIcon, BuildingOffice2Icon,
   ChatBubbleLeftIcon, ChatBubbleOvalLeftEllipsisIcon, CheckBadgeIcon, CheckCircleIcon, CheckIcon, ChevronDownIcon,
   ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, ClockIcon, CodeBracketIcon, CpuChipIcon, CreditCardIcon,
   CubeIcon, CursorArrowRaysIcon, DevicePhoneMobileIcon, DocumentCheckIcon, DocumentDuplicateIcon, DocumentTextIcon,
@@ -40,7 +40,7 @@ const HERO: Record<string, Svg> = {
   'layout-dashboard': Squares2X2Icon, users: UsersIcon, user: UserIcon, 'user-plus': UserPlusIcon, gavel: HandRaisedIcon,
   'scroll-text': DocumentTextIcon, 'table-2': TableCellsIcon, braces: CodeBracketIcon, archive: ArchiveBoxIcon,
   'archive-restore': ArchiveBoxArrowDownIcon, 'key-round': KeyIcon, save: ArrowDownOnSquareIcon, 'plug-zap': BoltIcon,
-  download: ArrowDownTrayIcon, 'file-check': DocumentCheckIcon, star: StarIcon,
+  download: ArrowDownTrayIcon, menu: Bars3Icon, 'file-check': DocumentCheckIcon, star: StarIcon,
 };
 const LUCIDE: Record<string, Svg> = {
   sun: Sun, castle: Castle, waves: Waves, 'mountain-snow': MountainSnow, sailboat: Sailboat, grape: Grape, 'circle-off': CircleOff,
