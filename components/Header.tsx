@@ -41,12 +41,18 @@ export function Header() {
     <>
       <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4">
-          <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold text-navy-900">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.svg" alt="" className="h-8 w-auto shrink-0" />
-            <span className="truncate">dazgveva.ge</span>
-            <span className="ml-0.5 shrink-0 rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700">დემო</span>
-          </Link>
+          <div className="flex min-w-0 items-center gap-3">
+            <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold text-navy-900">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.svg" alt="" className="h-8 w-auto shrink-0" />
+              <span className="truncate">dazgveva.ge</span>
+              <span className="ml-0.5 shrink-0 rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700">დემო</span>
+            </Link>
+            {/* Trust badge: who runs the platform. Hidden on phones, where the hero says it. */}
+            <span className="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-800 ring-1 ring-inset ring-brand-200 sm:inline-flex">
+              <Icon name="landmark" className="h-3.5 w-3.5" />არაკომერციული პლატფორმა
+            </span>
+          </div>
           <nav className="hidden items-center gap-6 whitespace-nowrap text-sm text-zinc-600 lg:flex">
             {SECTIONS.map(([id, label]) => <button key={id} onClick={() => toSection(id)} className="hover:text-zinc-900">{label}</button>)}
           </nav>
