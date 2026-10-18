@@ -92,8 +92,8 @@ export default function HomePage() {
           <div className="mx-auto mt-4 flex max-w-xl items-start gap-3 rounded-2xl border border-zinc-200 bg-white/80 p-4 text-left">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-navy-50 text-navy-900"><Icon name="landmark" className="h-5 w-5" /></span>
             <div>
-              <p className="text-sm font-semibold text-navy-900">დამოუკიდებელი არაკომერციული პლატფორმა</p>
-              <p className="mt-1 text-sm leading-relaxed text-zinc-600">ჩვენ არ ვართ სადაზღვევო ბროკერი. პლატფორმა არაკომერციული ორგანიზაციის ეგიდით მუშაობს, ამიტომ ფასები სრულად გამჭვირვალეა და მათში ფარული საკომისიო არ არის ჩადებული.</p>
+              <p className="text-sm font-semibold text-navy-900">არამომგებიანი საზოგადოებრივი პლატფორმა</p>
+              <p className="mt-1 text-sm leading-relaxed text-zinc-600">ჩვენ არ ვართ სადაზღვევო ბროკერი. სერვისი მუშაობს არაკომერციული ორგანიზაციის ეგიდით, რაც უზრუნველყოფს ტარიფების აბსოლუტურ გამჭვირვალობას და ფასში ფარული საკომისიოების არარსებობას.</p>
             </div>
           </div>
           <p className="mt-4 text-[11px] text-zinc-400">ეს საიტი დაცულია reCAPTCHA-ით და მოქმედებს Google-ის <a href="#" onClick={e => e.preventDefault()} className="underline">კონფიდენციალურობის პოლიტიკა</a> და <a href="#" onClick={e => e.preventDefault()} className="underline">მომსახურების პირობები</a>.</p>

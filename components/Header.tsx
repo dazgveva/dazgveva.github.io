@@ -50,7 +50,7 @@ export function Header() {
             </Link>
             {/* Trust badge: who runs the platform. Hidden on phones, where the hero says it. */}
             <span className="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-800 ring-1 ring-inset ring-brand-200 sm:inline-flex">
-              <Icon name="landmark" className="h-3.5 w-3.5" />არაკომერციული პლატფორმა
+              <Icon name="landmark" className="h-3.5 w-3.5" />საზოგადოებრივი კავშირი (NGO)
             </span>
           </div>
           <nav className="hidden items-center gap-6 whitespace-nowrap text-sm text-zinc-600 lg:flex">

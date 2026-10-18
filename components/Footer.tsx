@@ -19,7 +19,7 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <p className="mx-auto max-w-6xl px-4 pb-2 text-center text-xs leading-relaxed text-zinc-500 sm:text-left">dazgveva.ge არასამთავრობო ორგანიზაციის დამოუკიდებელი ინიციატივაა. ყველა ტექნოლოგიური და საინფორმაციო სერვისი ლიცენზირებულია.</p>
+      <p className="mx-auto max-w-6xl px-4 pb-2 text-center text-xs leading-relaxed text-zinc-500 sm:text-left">პლატფორმა dazgveva.ge წარმოადგენს საზოგადოებრივი კავშირის (NGO) დამოუკიდებელ ინიციატივას. ყველა ტექნოლოგიური და საინფორმაციო სერვისი ლიცენზირებულია.</p>
       <p className="mx-auto max-w-6xl px-4 pb-6 text-center text-xs text-zinc-400 sm:text-left">დემო ვერსია: ყველა კომპანია, შეთავაზება და მონაცემი გამოგონილია.</p>
     </footer>
   );
