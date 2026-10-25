@@ -14,7 +14,7 @@ const georgian = Noto_Sans_Georgian({ subsets: ['georgian', 'latin'], weight: ['
 
 export const metadata: Metadata = {
   title: 'dazgveva.ge — V3 პროტოტიპი',
-  description: 'აპოვნინე ხელოვნურ ინტელექტს შენთვის შესაფერისი სადაზღვევო პაკეტი. დემო ვერსია.',
+  description: 'მომენტალური აუქციონი და AI ოპტიმიზაცია თქვენი ავტომობილის დაზღვევისთვის — სრულიად უფასოდ და შუამავლების გარეშე. დემო ვერსია.',
   icons: { icon: '/logo.svg' },
 };
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover', themeColor: '#ffffff' };

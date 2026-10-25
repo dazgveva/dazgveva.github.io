@@ -57,10 +57,13 @@ export default function HomePage() {
         <div className="relative mx-auto w-full max-w-3xl px-4 pb-16 pt-14 text-center sm:pt-20 lg:py-12">
           <div className="flex items-center justify-center gap-3 sm:gap-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.svg" alt="" className="h-20 w-auto sm:h-28" />
-            <span className="text-5xl font-bold tracking-tight text-navy-900 sm:text-7xl">dazgveva</span>
+            <img src="/logo.svg" alt="" className="h-14 w-auto sm:h-24" />
+            <span className="text-4xl font-bold tracking-tight text-navy-900 sm:text-6xl">dazgveva</span>
           </div>
-          <h1 className="mx-auto mt-6 max-w-xl text-sm font-medium uppercase tracking-wider text-zinc-600 sm:text-base">აპოვნინე ხელოვნურ ინტელექტს შენთვის შესაფერისი სადაზღვევო პაკეტი</h1>
+          <h1 className="mx-auto mt-6 max-w-2xl text-xl font-bold leading-snug text-balance text-navy-900 sm:text-[28px]">
+            მომენტალური აუქციონი და AI ოპტიმიზაცია თქვენი ავტომობილის დაზღვევისთვის — <span className="text-brand-700">სრულიად უფასოდ და შუამავლების გარეშე.</span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-pretty text-zinc-600 sm:text-base">ჩვენ ვართ მიუკერძოებელი არაკომერციული პროექტი: თქვენი ტექპასპორტი წამებში მუშავდება, ხოლო AI-აუქციონის რეჟიმში წამყვანი სადაზღვევო კომპანიები რეალურ დროში ეჯიბრებიან ერთმანეთს, რათა თქვენს ავტომობილს საუკეთესო პირობები შესთავაზონ.</p>
 
           <div className="relative mt-8">
             <div className="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-linear-to-r from-brand-300 via-navy-200 to-brand-300 opacity-50 blur-2xl" />
