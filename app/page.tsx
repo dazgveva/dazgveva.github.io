@@ -54,18 +54,18 @@ export default function HomePage() {
 
       <section id="top" className="relative scroll-mt-24 overflow-hidden lg:flex lg:min-h-[calc(100svh-3.5rem-1px)] lg:items-center">
         <div className="pointer-events-none absolute left-1/2 top-24 h-72 w-[42rem] max-w-[120%] -translate-x-1/2 rounded-full bg-linear-to-b from-brand-100 via-navy-50 to-transparent opacity-70 blur-3xl" />
-        <div className="relative mx-auto w-full max-w-3xl px-4 pb-16 pt-14 text-center sm:pt-20 lg:py-12">
+        <div className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-14 text-center sm:pt-20 lg:py-12">
           <div className="flex items-center justify-center gap-3 sm:gap-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.svg" alt="" className="h-14 w-auto sm:h-24" />
             <span className="text-4xl font-bold tracking-tight text-navy-900 sm:text-6xl">dazgveva</span>
           </div>
-          <h1 className="mx-auto mt-6 max-w-2xl text-xl font-bold leading-snug text-balance text-navy-900 sm:text-[28px]">
-            გადაიღე ტექპასპორტი — AI აუქციონი შეგირჩევს <span className="text-brand-700">ფართე, ოპტიმალურ ან იაფ</span> ავტოდაზღვევას.
+          <h1 className="mx-auto mt-6 max-w-4xl text-lg font-bold leading-snug text-pretty text-navy-900 sm:text-2xl">
+            <span className="sm:block">გადაიღე ტექპასპორტი — AI აუქციონი შეგირჩევს</span> <span className="whitespace-nowrap text-brand-700">ფართე, ოპტიმალურ ან იაფ</span> ავტოდაზღვევას.
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-[15px] leading-relaxed text-pretty text-zinc-600 sm:text-base">ჩვენ ვართ არაკომერციული (NGO) პლატფორმა. არ ვართ შუამავალი — სრულიად უფასოდ და პოლისის გაძვირების გარეშე.</p>
+          <p className="mx-auto mt-3 max-w-3xl text-[15px] leading-relaxed text-pretty text-zinc-600 sm:text-base">ჩვენ ვართ არაკომერციული (NGO) პლატფორმა. არ ვართ შუამავალი — სრულიად უფასოდ და პოლისის გაძვირების გარეშე.</p>
 
-          <div className="relative mt-8">
+          <div className="relative mx-auto mt-8 max-w-3xl">
             <div className="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-linear-to-r from-brand-300 via-navy-200 to-brand-300 opacity-50 blur-2xl" />
             <UploadZone pick={pick} scan={scan} />
           </div>
