@@ -61,9 +61,9 @@ export default function HomePage() {
             <span className="text-4xl font-bold tracking-tight text-navy-900 sm:text-6xl">dazgveva</span>
           </div>
           <h1 className="mx-auto mt-6 max-w-2xl text-xl font-bold leading-snug text-balance text-navy-900 sm:text-[28px]">
-            მომენტალური აუქციონი და AI ოპტიმიზაცია თქვენი ავტომობილის დაზღვევისთვის — <span className="text-brand-700">სრულიად უფასოდ და შუამავლების გარეშე.</span>
+            გადაიღე ტექპასპორტი — AI აუქციონი შეგირჩევს <span className="text-brand-700">ფართე, ოპტიმალურ ან იაფ</span> ავტოდაზღვევას.
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-pretty text-zinc-600 sm:text-base">ჩვენ ვართ მიუკერძოებელი არაკომერციული პროექტი: თქვენი ტექპასპორტი წამებში მუშავდება, ხოლო AI-აუქციონის რეჟიმში წამყვანი სადაზღვევო კომპანიები რეალურ დროში ეჯიბრებიან ერთმანეთს, რათა თქვენს ავტომობილს საუკეთესო პირობები შესთავაზონ.</p>
+          <p className="mx-auto mt-3 max-w-2xl text-[15px] leading-relaxed text-pretty text-zinc-600 sm:text-base">ჩვენ ვართ არაკომერციული (NGO) პლატფორმა. არ ვართ შუამავალი — სრულიად უფასოდ და პოლისის გაძვირების გარეშე.</p>
 
           <div className="relative mt-8">
             <div className="pointer-events-none absolute inset-x-12 -bottom-5 h-14 rounded-full bg-linear-to-r from-brand-300 via-navy-200 to-brand-300 opacity-50 blur-2xl" />
@@ -89,17 +89,7 @@ export default function HomePage() {
             </>
           )}
 
-          <div className="mt-8 inline-flex items-start gap-2 rounded-2xl bg-brand-50 px-4 py-2.5 text-left text-sm font-semibold text-brand-800 ring-1 ring-inset ring-brand-200 sm:items-center sm:rounded-full">
-            <Icon name="badge-check" className="h-5 w-5 shrink-0" />ჩვენი მომსახურება უფასოა და არ იწვევს სადაზღვევო პროდუქტის გაძვირებას.
-          </div>
-          <div className="mx-auto mt-4 flex max-w-xl items-start gap-3 rounded-2xl border border-zinc-200 bg-white/80 p-4 text-left">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-navy-50 text-navy-900"><Icon name="landmark" className="h-5 w-5" /></span>
-            <div>
-              <p className="text-sm font-semibold text-navy-900">არამომგებიანი საზოგადოებრივი პლატფორმა</p>
-              <p className="mt-1 text-sm leading-relaxed text-zinc-600">ჩვენ არ ვართ სადაზღვევო ბროკერი. სერვისი მუშაობს არაკომერციული ორგანიზაციის ეგიდით, რაც უზრუნველყოფს ტარიფების აბსოლუტურ გამჭვირვალობას და ფასში ფარული საკომისიოების არარსებობას.</p>
-            </div>
-          </div>
-          <p className="mt-4 text-[11px] text-zinc-400">ეს საიტი დაცულია reCAPTCHA-ით და მოქმედებს Google-ის <a href="#" onClick={e => e.preventDefault()} className="underline">კონფიდენციალურობის პოლიტიკა</a> და <a href="#" onClick={e => e.preventDefault()} className="underline">მომსახურების პირობები</a>.</p>
+          <p className="mt-8 text-[11px] text-zinc-400">ეს საიტი დაცულია reCAPTCHA-ით და მოქმედებს Google-ის <a href="#" onClick={e => e.preventDefault()} className="underline">კონფიდენციალურობის პოლიტიკა</a> და <a href="#" onClick={e => e.preventDefault()} className="underline">მომსახურების პირობები</a>.</p>
         </div>
       </section>
 
@@ -146,6 +136,13 @@ export default function HomePage() {
       <section className="mx-auto max-w-3xl px-4 py-14 text-center">
         <h2 className={h2}>ვინ ვართ</h2>
         <p className="mt-4 text-zinc-600">dazgveva.ge არის დამოუკიდებელი შუამავალი მძღოლებსა და სადაზღვევო კომპანიებს შორის. ჩვენი მიზანია, მარტივად იპოვოთ თქვენთვის სასურველი პაკეტი და კომპანია.</p>
+        <div className="mx-auto mt-6 flex max-w-xl items-start gap-3 rounded-2xl border border-zinc-200 bg-white/80 p-4 text-left">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-navy-50 text-navy-900"><Icon name="landmark" className="h-5 w-5" /></span>
+          <div>
+            <p className="text-sm font-semibold text-navy-900">არამომგებიანი საზოგადოებრივი პლატფორმა</p>
+            <p className="mt-1 text-sm leading-relaxed text-zinc-600">ჩვენ არ ვართ სადაზღვევო ბროკერი. სერვისი მუშაობს არაკომერციული ორგანიზაციის ეგიდით, რაც უზრუნველყოფს ტარიფების აბსოლუტურ გამჭვირვალობას და ფასში ფარული საკომისიოების არარსებობას.</p>
+          </div>
+        </div>
       </section>
 
       <section id="faq" className="mx-auto max-w-3xl scroll-mt-24 px-4 py-14">
